@@ -6,9 +6,10 @@ const useToggleObjective = () => {
   const { games, selectedGame, setGames, setSelectedGame } = useGameContext();
 
   return useCallback((objective) => {
-    const {id: objectiveId, categoryId} = objective
+    const { id: objectiveId, categoryId } = objective;
     const updatedGames = games.map(game => {
       if (game.id !== selectedGame.id) return game;
+
       const updatedCategories = game.categories.map(category => {
         if (category.id !== categoryId) return category;
         const updatedObjectives = category.objectives.map(obj =>
@@ -16,9 +17,11 @@ const useToggleObjective = () => {
         );
         return { ...category, objectives: updatedObjectives };
       });
+
       const flatObjectives = updatedCategories.flatMap(c => c.objectives);
       const completed = flatObjectives.filter(o => o.completed).length;
       const total = flatObjectives.length;
+
       return {
         ...game,
         categories: updatedCategories,
