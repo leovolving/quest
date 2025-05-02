@@ -2,10 +2,12 @@
 import React, { useState } from 'react';
 import CategoryList from './CategoryList';
 import TagView from './TagView';
+import { useGameContext } from '../context/GameContext';
 
-const GameDetail = ({ game, goBack }) => {
+const GameDetail = ({ game }) => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
+  const { setSelectedGame } = useGameContext();
 
   const tagTypes = Array.from(
     new Set(
@@ -15,10 +17,25 @@ const GameDetail = ({ game, goBack }) => {
     )
   );
 
+  const filteredCategories = game.categories.map(cat => {
+    const visibleObjectives = hideCompleted
+      ? cat.objectives.filter(obj => !obj.completed)
+      : cat.objectives;
+    return { ...cat, visibleObjectives };
+  });
+
+  const filteredForTagView = game.categories.map(cat => ({
+    ...cat,
+    objectives: hideCompleted
+      ? cat.objectives.filter(obj => !obj.completed)
+      : cat.objectives,
+  }));
+
   return (
     <div className="game-detail">
-      <button onClick={goBack}>← Back</button>
+      <button onClick={() => setSelectedGame(null)}>← Back</button>
       <h1>{game.name}</h1>
+      <p>Status: <strong>{game.status || 'not-played'}</strong></p>
 
       <div className="view-controls">
         <label>
@@ -48,13 +65,17 @@ const GameDetail = ({ game, goBack }) => {
 
       {groupByTagType ? (
         <TagView
-          categories={game.categories}
+          categories={filteredForTagView}
           tagType={groupByTagType}
           hideCompleted={hideCompleted}
         />
       ) : (
-        game.categories.map(cat => (
-          <CategoryList key={cat.id} category={cat} hideCompleted={hideCompleted} />
+        filteredCategories.map(cat => (
+          <CategoryList
+            key={cat.id}
+            category={{ ...cat, objectives: cat.visibleObjectives }}
+            hideCompleted={hideCompleted}
+          />
         ))
       )}
     </div>
