@@ -48,14 +48,10 @@ function App() {
       <GlobalStyle />
       <GameProvider value={{ games, setGames, selectedGame, setSelectedGame }}>
         <AppContainer>
-          <button onClick={() => setIsDarkMode(prev => !prev)}>
+          <button onClick={() => setIsDarkMode((prev) => !prev)}>
             Toggle {isDarkMode ? 'Light' : 'Dark'} Mode
           </button>
-          {selectedGame ? (
-            <GameDetail game={selectedGame} />
-          ) : (
-            <GameDashboard />
-          )}
+          {selectedGame ? <GameDetail game={selectedGame} /> : <GameDashboard />}
         </AppContainer>
       </GameProvider>
     </ThemeProvider>

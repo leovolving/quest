@@ -19,11 +19,7 @@ const ObjectiveItem = ({ objective }) => {
 
   return (
     <Wrapper>
-      <input
-        type="checkbox"
-        checked={objective.completed}
-        onChange={handleChange}
-      />
+      <input type="checkbox" checked={objective.completed} onChange={handleChange} />
       <span>{objective.title}</span>
       {objective.notes && <em> - {objective.notes}</em>}
     </Wrapper>

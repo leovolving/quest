@@ -64,17 +64,14 @@ const GameDashboard = () => {
       {Object.entries(groupedGames).map(([status, games]) => (
         <GameCard key={status}>
           <h2>{status.replace(/-/g, ' ')}</h2>
-          {games.map(game => (
-            <GameCardButton
-              key={game.id}
-              onClick={() => setSelectedGame(game)}
-            >
+          {games.map((game) => (
+            <GameCardButton key={game.id} onClick={() => setSelectedGame(game)}>
               <h3>{game.name}</h3>
               <p>{game.categories.length} categories</p>
               <progress value={game.progress.completed} max={game.progress.total} />
             </GameCardButton>
           ))}
-          </GameCard>
+        </GameCard>
       ))}
     </Dashboard>
   );

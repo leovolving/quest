@@ -4,9 +4,9 @@ import ObjectiveList from './ObjectiveList';
 
 const groupObjectivesByTag = (categories, tagType, hideCompleted) => {
   const grouped = {};
-  categories.forEach(category => {
-    category.objectives.forEach(obj => {
-      obj.tags?.forEach(tag => {
+  categories.forEach((category) => {
+    category.objectives.forEach((obj) => {
+      obj.tags?.forEach((tag) => {
         if (tag.type === tagType) {
           if (!grouped[tag.value]) grouped[tag.value] = [];
           if (!(hideCompleted && obj.completed)) {
