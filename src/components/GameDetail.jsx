@@ -4,10 +4,10 @@ import CategoryList from './CategoryList';
 import TagView from './TagView';
 import { useGameContext } from '../context/GameContext';
 
-const GameDetail = ({ game }) => {
+const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
-  const { setSelectedGame } = useGameContext();
+  const { selectedGame: game, setSelectedGame } = useGameContext();
 
   const tagTypes = Array.from(
     new Set(

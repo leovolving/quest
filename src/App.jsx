@@ -1,10 +1,9 @@
 // src/App.jsx
 import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { GameProvider } from './context/GameContext';
+import { useGameContext } from './context/GameContext';
 import GameDashboard from './components/GameDashboard';
 import GameDetail from './components/GameDetail';
-import sampleData from './data/sampleData';
 
 const lightTheme = {
   background: '#ffffff',
@@ -34,8 +33,7 @@ const AppContainer = styled.div`
 `;
 
 function App() {
-  const [games, setGames] = useState(sampleData);
-  const [selectedGame, setSelectedGame] = useState(null);
+  const { selectedGame } = useGameContext();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -46,14 +44,12 @@ function App() {
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <GlobalStyle />
-      <GameProvider value={{ games, setGames, selectedGame, setSelectedGame }}>
-        <AppContainer>
-          <button onClick={() => setIsDarkMode((prev) => !prev)}>
-            Toggle {isDarkMode ? 'Light' : 'Dark'} Mode
-          </button>
-          {selectedGame ? <GameDetail game={selectedGame} /> : <GameDashboard />}
-        </AppContainer>
-      </GameProvider>
+      <AppContainer>
+        <button onClick={() => setIsDarkMode((prev) => !prev)}>
+          Toggle {isDarkMode ? 'Light' : 'Dark'} Mode
+        </button>
+        {selectedGame ? <GameDetail /> : <GameDashboard />}
+      </AppContainer>
     </ThemeProvider>
   );
 }
