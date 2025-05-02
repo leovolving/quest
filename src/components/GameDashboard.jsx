@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 
-import NewGameForm from './NewGameForm';
+import NewGameForm from './forms/NewGameForm';
 
 const Dashboard = styled.div`
   display: grid;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { FocusTrap } from 'focus-trap-react';
 
-import { useGameContext } from '../context/GameContext';
+import { useGameContext } from '../../context/GameContext';
 
 const Overlay = styled.div`
   position: fixed;
@@ -75,6 +75,7 @@ const NewGameForm = ({ isOpen, onClose }) => {
     setGames([...games, newGame]); // Add new game to the context's games list
     setGameName(''); // Reset input
     setGameStatus('currently-playing'); // Reset status to default
+    onClose();
   };
 
   if (!isOpen) return null;
