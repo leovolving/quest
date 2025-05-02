@@ -1,11 +1,27 @@
 // src/components/GameDashboard.jsx
 import React from 'react';
 import styled from 'styled-components';
+
 import { useGameContext } from '../context/GameContext';
+import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
+
+import NewGameForm from './NewGameForm';
 
 const Dashboard = styled.div`
   display: grid;
   gap: 1rem;
+`;
+
+const NewGameButton = styled.button`
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+  }
 `;
 
 const GameCard = styled.div`
@@ -50,6 +66,7 @@ const GameCardButton = styled.button`
 
 const GameDashboard = () => {
   const { games, setSelectedGame } = useGameContext();
+  const [isNewGameFormOpen, toggleIsNewGameFormOpen] = useStateToggleBoolean(false);
 
   const groupedGames = games.reduce((acc, game) => {
     const status = game.status || 'not-played';
@@ -61,6 +78,8 @@ const GameDashboard = () => {
   return (
     <Dashboard>
       <h1>Your Games</h1>
+      <NewGameButton onClick={toggleIsNewGameFormOpen}>+ Add new game</NewGameButton>
+      <NewGameForm isOpen={isNewGameFormOpen} onClose={toggleIsNewGameFormOpen} />
       {Object.entries(groupedGames).map(([status, games]) => (
         <GameCard key={status}>
           <h2>{status.replace(/-/g, ' ')}</h2>
