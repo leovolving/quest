@@ -1,7 +1,10 @@
 // src/components/GameDetail.js
 import React, { useState } from 'react';
+
 import CategoryList from './CategoryList';
 import TagView from './TagView';
+import NewObjectiveForm from './forms/NewObjectiveForm';
+
 import { useGameContext } from '../context/GameContext';
 
 const GameDetail = () => {
@@ -75,6 +78,8 @@ const GameDetail = () => {
           />
         ))
       )}
+
+      <NewObjectiveForm />
     </div>
   );
 };
