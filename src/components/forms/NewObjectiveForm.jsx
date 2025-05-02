@@ -38,12 +38,38 @@ const FormContainer = styled.form`
   }
 `;
 
+const TagList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  li {
+    background: ${({ theme }) => (theme.mode === 'dark' ? '#444' : '#eee')};
+    color: ${({ theme }) => (theme.mode === 'dark' ? '#fff' : '#000')};
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+`;
 const NewObjectiveForm = () => {
   const { selectedGame: game, setGames, setSelectedGame } = useGameContext();
 
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(game.categories[0]?.id || '');
+  const [newTagType, setNewTagType] = useState('');
+  const [newTagName, setNewTagName] = useState('');
+  const [newTags, setNewTags] = useState([]);
+
+  const handleAddTag = () => {
+    if (!newTagType || !newTagName) return;
+    const tag = { type: newTagType, value: newTagName };
+    setNewTags((prev) => [...prev, tag]);
+    setNewTagType('');
+    setNewTagName('');
+  };
 
   const handleAddObjective = (e) => {
     e.preventDefault();
@@ -60,7 +86,7 @@ const NewObjectiveForm = () => {
             title: newObjectiveTitle,
             completed: false,
             notes: newObjectiveNote,
-            tags: [],
+            tags: newTags,
             categoryId: cat.id,
           },
         ],
@@ -72,6 +98,7 @@ const NewObjectiveForm = () => {
     setSelectedGame(updatedGame);
     setNewObjectiveTitle('');
     setNewObjectiveNote('');
+    setNewTags([]);
   };
 
   return (
@@ -104,6 +131,36 @@ const NewObjectiveForm = () => {
           placeholder="Optional note"
         />
       </label>
+
+      <label>
+        Tag Type:
+        <input
+          type="text"
+          value={newTagType}
+          onChange={(e) => setNewTagType(e.target.value)}
+          placeholder="e.g. location"
+        />
+      </label>
+      <label>
+        Tag Name:
+        <input
+          type="text"
+          value={newTagName}
+          onChange={(e) => setNewTagName(e.target.value)}
+          placeholder="e.g. Saint Denis"
+        />
+      </label>
+      <button type="button" onClick={handleAddTag}>
+        Add Tag
+      </button>
+
+      {newTags.length > 0 && (
+        <TagList>
+          {newTags.map((tag, idx) => (
+            <li key={idx}>{`${tag.type}: ${tag.value}`}</li>
+          ))}
+        </TagList>
+      )}
       <button type="submit">Add Objective</button>
     </FormContainer>
   );
