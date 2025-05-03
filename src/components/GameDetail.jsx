@@ -10,7 +10,7 @@ import { useGameContext } from '../context/GameContext';
 const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
-  const { selectedGame: game, setSelectedGame } = useGameContext();
+  const { selectedGame: game, setSelectedGame, setGames } = useGameContext();
 
   const tagTypes = Array.from(
     new Set(
@@ -32,13 +32,24 @@ const GameDetail = () => {
     objectives: hideCompleted ? cat.objectives.filter((obj) => !obj.completed) : cat.objectives,
   }));
 
+  const onUpdateStatus = (e) => {
+    const updatedGame = { ...game, status: e.target.value };
+    setSelectedGame(updatedGame);
+    setGames((prev) => prev.map((g) => (g.id === game.id ? updatedGame : g)));
+  };
+
   return (
     <div className="game-detail">
       <button onClick={() => setSelectedGame(null)}>← Back</button>
       <h1>{game.name}</h1>
-      <p>
-        Status: <strong>{game.status || 'not-played'}</strong>
-      </p>
+      <label>
+        Status:{' '}
+        <select value={game.status || 'not-played'} onChange={onUpdateStatus}>
+          <option value="not-played">Not Played</option>
+          <option value="currently-playing">Currently Playing</option>
+          <option value="beaten-game">Game Beaten</option>
+        </select>
+      </label>
 
       <div className="view-controls">
         <label>
