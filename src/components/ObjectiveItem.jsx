@@ -7,6 +7,8 @@ import useToggleObjective from '../hooks/useToggleObjective';
 
 import { useGameContext } from '../context/GameContext';
 
+import TagEditor from './forms/TagEditor';
+
 const Wrapper = styled.div`
   margin: 0.5rem 0;
   display: flex;
@@ -58,6 +60,10 @@ const ObjectiveItem = ({ objective }) => {
     );
   };
 
+  const handleTagUpdate = (newTags) => {
+    updateObjective({ ...objective, tags: newTags });
+  };
+
   return (
     <Wrapper>
       <input type="checkbox" checked={objective.completed} onChange={handleChange} />
@@ -80,6 +86,7 @@ const ObjectiveItem = ({ objective }) => {
           <span>{objective.title}</span>
           {objective.notes && <em> - {objective.notes}</em>}
           <button onClick={toggleIsEditing}>Edit</button>
+          <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
         </>
       )}
     </Wrapper>
