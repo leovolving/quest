@@ -9,29 +9,48 @@ import NewGameForm from './forms/NewGameForm';
 
 const Dashboard = styled.div`
   display: grid;
-  gap: 1rem;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const Title = styled.h1`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 2rem;
+  font-weight: 600;
 `;
 
 const NewGameButton = styled.button`
-  padding: 10px;
-  background-color: #4caf50;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  background-color: ${({ theme }) => theme.colors.success};
   color: white;
   border: none;
-  cursor: pointer;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-weight: 500;
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
   &:hover {
-    background-color: #45a049;
+    background-color: ${({ theme }) => theme.colors.successHover};
+    transform: translateY(-1px);
   }
 `;
 
 const GameCard = styled.div`
-  background-color: ${({ theme }) => theme.cardBg};
-  padding: 1rem;
-  border-radius: 8px;
-  transition: background 0.3s;
+  background-color: ${({ theme }) => theme.colors.cardBg};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+  transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.cardHover};
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.lg};
   }
 `;
 
@@ -39,29 +58,56 @@ const GameCardButton = styled.button`
   display: block;
   width: 100%;
   text-align: left;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 8px;
+  padding: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  background-color: ${({ theme }) => theme.colors.cardBg};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   cursor: pointer;
-  color: white;
+  color: ${({ theme }) => theme.colors.text};
+  transition: all 0.2s ease-in-out;
 
   h3 {
-    margin: 0 0 0.5rem;
+    margin: 0 0 ${({ theme }) => theme.spacing.xs};
+    color: ${({ theme }) => theme.colors.text};
+    font-size: 1.25rem;
   }
 
   p {
-    margin: 0 0 0.5rem;
+    margin: 0 0 ${({ theme }) => theme.spacing.xs};
+    color: ${({ theme }) => theme.colors.textSecondary};
+    font-size: 0.875rem;
   }
 
   progress {
     width: 100%;
+    height: 6px;
+    border-radius: ${({ theme }) => theme.borderRadius.sm};
+    background-color: ${({ theme }) => theme.colors.border};
+
+    &::-webkit-progress-bar {
+      background-color: ${({ theme }) => theme.colors.border};
+      border-radius: ${({ theme }) => theme.borderRadius.sm};
+    }
+
+    &::-webkit-progress-value {
+      background-color: ${({ theme }) => theme.colors.primary};
+      border-radius: ${({ theme }) => theme.borderRadius.sm};
+    }
   }
 
   &:hover {
-    background-color: #2c2c2c;
+    background-color: ${({ theme }) => theme.colors.cardHover};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const StatusTitle = styled.h2`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 ${({ theme }) => theme.spacing.md};
+  text-transform: capitalize;
 `;
 
 const GameDashboard = () => {
@@ -77,12 +123,14 @@ const GameDashboard = () => {
 
   return (
     <Dashboard>
-      <h1>Your Games</h1>
-      <NewGameButton onClick={toggleIsNewGameFormOpen}>+ Add new game</NewGameButton>
+      <Header>
+        <Title>Your Games</Title>
+        <NewGameButton onClick={toggleIsNewGameFormOpen}>+ Add new game</NewGameButton>
+      </Header>
       <NewGameForm isOpen={isNewGameFormOpen} onClose={toggleIsNewGameFormOpen} />
       {Object.entries(groupedGames).map(([status, games]) => (
         <GameCard key={status}>
-          <h2>{status.replace(/-/g, ' ')}</h2>
+          <StatusTitle>{status.replace(/-/g, ' ')}</StatusTitle>
           {games.map((game) => (
             <GameCardButton key={game.id} onClick={() => setSelectedGame(game)}>
               <h3>{game.name}</h3>

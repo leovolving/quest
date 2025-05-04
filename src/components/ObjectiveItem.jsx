@@ -10,17 +10,103 @@ import { useGameContext } from '../context/GameContext';
 import TagEditor from './forms/TagEditor';
 
 const Wrapper = styled.div`
-  margin: 0.5rem 0;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.cardHover};
+  }
+`;
+
+const Checkbox = styled.input`
+  margin-top: ${({ theme }) => theme.spacing.xs};
+`;
+
+const Content = styled.div`
+  flex: 1;
+`;
+
+const Title = styled.span`
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 500;
+`;
+
+const Note = styled.em`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: 0.875rem;
+  margin-left: ${({ theme }) => theme.spacing.xs};
+`;
+
+const EditButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: 0.875rem;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: ${({ theme }) => theme.spacing.sm};
+  width: 100%;
+`;
+
+const Input = styled.input`
+  padding: ${({ theme }) => theme.spacing.sm};
+  background-color: ${({ theme }) => theme.colors.inputBackground};
+  color: ${({ theme }) => theme.colors.text};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const Button = styled.button`
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: 0.875rem;
+  font-weight: 500;
+`;
+
+const SaveButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryHover};
+  }
+`;
+
+const CancelButton = styled(Button)`
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+    border-color: ${({ theme }) => theme.colors.text};
+  }
 `;
 
 const ObjectiveItem = ({ objective }) => {
@@ -66,29 +152,33 @@ const ObjectiveItem = ({ objective }) => {
 
   return (
     <Wrapper>
-      <input type="checkbox" checked={objective.completed} onChange={handleChange} />
-      {isEditing ? (
-        <Form onSubmit={handleEditSubmit}>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <input
-            type="text"
-            placeholder="Notes (optional)"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          <button type="submit">Save</button>
-          <button type="button" onClick={toggleIsEditing}>
-            Cancel
-          </button>
-        </Form>
-      ) : (
-        <>
-          <span>{objective.title}</span>
-          {objective.notes && <em> - {objective.notes}</em>}
-          <button onClick={toggleIsEditing}>Edit</button>
-          <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
-        </>
-      )}
+      <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
+      <Content>
+        {isEditing ? (
+          <Form onSubmit={handleEditSubmit}>
+            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            <Input
+              type="text"
+              placeholder="Notes (optional)"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+            <ButtonGroup>
+              <SaveButton type="submit">Save</SaveButton>
+              <CancelButton type="button" onClick={toggleIsEditing}>
+                Cancel
+              </CancelButton>
+            </ButtonGroup>
+          </Form>
+        ) : (
+          <>
+            <Title>{objective.title}</Title>
+            {objective.notes && <Note> - {objective.notes}</Note>}
+            <EditButton onClick={toggleIsEditing}>Edit</EditButton>
+            <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
+          </>
+        )}
+      </Content>
     </Wrapper>
   );
 };
