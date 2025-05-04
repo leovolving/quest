@@ -19,6 +19,9 @@ const lightTheme = {
     textSecondary: '#64748b',
     border: '#e2e8f0',
     inputBackground: '#ffffff',
+    inputBorder: '#cbd5e1',
+    inputText: '#1e293b',
+    inputPlaceholder: '#94a3b8',
   },
   spacing: {
     xs: '0.25rem',
@@ -53,6 +56,9 @@ const darkTheme = {
     textSecondary: '#cbd5e1',
     border: '#334155',
     inputBackground: '#1e293b',
+    inputBorder: '#475569',
+    inputText: '#f8fafc',
+    inputPlaceholder: '#94a3b8',
   },
   spacing: {
     xs: '0.25rem',
@@ -93,6 +99,32 @@ const GlobalStyle = createGlobalStyle`
 
   input, select, textarea {
     font-family: inherit;
+    background-color: ${({ theme }) => theme.colors.inputBackground};
+    color: ${({ theme }) => theme.colors.inputText};
+    border: 1px solid ${({ theme }) => theme.colors.inputBorder};
+    border-radius: ${({ theme }) => theme.borderRadius.sm};
+    padding: ${({ theme }) => theme.spacing.sm};
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: ${({ theme }) => theme.colors.primary};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary}20;
+    }
+
+    &::placeholder {
+      color: ${({ theme }) => theme.colors.inputPlaceholder};
+    }
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364758b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right ${({ theme }) => theme.spacing.sm} center;
+    background-size: 16px;
+    padding-right: ${({ theme }) => theme.spacing.xl};
   }
 `;
 
