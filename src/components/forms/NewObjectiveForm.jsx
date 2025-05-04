@@ -1,4 +1,4 @@
-// src/components/GameDetail.js
+// src/components/forms/NewObjectiveForm.js
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -55,26 +55,44 @@ const TagList = styled.ul`
     border-radius: 4px;
   }
 `;
+
 const NewObjectiveForm = () => {
   const { selectedGame: game, setGames, setSelectedGame } = useGameContext();
 
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState(game.categories[0]?.id || '');
+  const [selectedCategoryName, setSelectedCategoryName] = useState(game.categories[0]?.name || '');
   const [newTags, setNewTags] = useState([]);
+
+  const uniqueCategoryNames = Array.from(new Set(game.categories.map((cat) => cat.name)));
 
   const handleAddObjective = (e) => {
     e.preventDefault();
-    if (!newObjectiveTitle || !selectedCategoryId) return;
+    if (!newObjectiveTitle || !selectedCategoryName) return;
 
-    const updatedCategories = game.categories.map((cat) => {
-      if (cat.id !== selectedCategoryId) return cat;
+    let category = game.categories.find((cat) => cat.name === selectedCategoryName);
+    let updatedCategories;
+
+    if (!category) {
+      const newCategory = {
+        id: `${Date.now()}`,
+        name: selectedCategoryName,
+        objectives: [],
+      };
+      category = newCategory;
+      updatedCategories = [...game.categories, newCategory];
+    } else {
+      updatedCategories = [...game.categories];
+    }
+
+    updatedCategories = updatedCategories.map((cat) => {
+      if (cat.name !== selectedCategoryName) return cat;
       return {
         ...cat,
         objectives: [
           ...cat.objectives,
           {
-            id: `${selectedCategoryId}-${game.categories.length + 1}`,
+            id: `${cat.id}-${cat.objectives.length + 1}`,
             title: newObjectiveTitle,
             completed: false,
             notes: newObjectiveNote,
@@ -98,13 +116,17 @@ const NewObjectiveForm = () => {
       <h3>Add New Objective</h3>
       <label>
         Category:
-        <select value={selectedCategoryId} onChange={(e) => setSelectedCategoryId(e.target.value)}>
-          {game.categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
+        <input
+          list="category-options"
+          value={selectedCategoryName}
+          onChange={(e) => setSelectedCategoryName(e.target.value)}
+          placeholder="Category name"
+        />
+        <datalist id="category-options">
+          {uniqueCategoryNames.map((name) => (
+            <option key={name} value={name} />
           ))}
-        </select>
+        </datalist>
       </label>
       <label>
         Title:
