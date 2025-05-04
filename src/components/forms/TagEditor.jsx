@@ -36,7 +36,7 @@ const Button = styled.button`
   }
 `;
 
-const TagEditor = ({ objective, onUpdateTags }) => {
+const TagEditor = ({ objective = {}, onUpdateTags }) => {
   const { games, selectedGame } = useGameContext();
   const [newType, setNewType] = useState('');
   const [newValue, setNewValue] = useState('');
@@ -106,7 +106,9 @@ const TagEditor = ({ objective, onUpdateTags }) => {
           ))}
         </datalist>
 
-        <Button onClick={handleAddTag}>Add Tag</Button>
+        <Button type="button" onClick={handleAddTag}>
+          Add Tag
+        </Button>
       </TagRow>
     </Wrapper>
   );

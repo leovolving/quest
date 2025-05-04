@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import TagEditor from './TagEditor';
+
 import { useGameContext } from '../../context/GameContext';
 
 const FormContainer = styled.form`
@@ -59,17 +61,7 @@ const NewObjectiveForm = () => {
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(game.categories[0]?.id || '');
-  const [newTagType, setNewTagType] = useState('');
-  const [newTagName, setNewTagName] = useState('');
   const [newTags, setNewTags] = useState([]);
-
-  const handleAddTag = () => {
-    if (!newTagType || !newTagName) return;
-    const tag = { type: newTagType, value: newTagName };
-    setNewTags((prev) => [...prev, tag]);
-    setNewTagType('');
-    setNewTagName('');
-  };
 
   const handleAddObjective = (e) => {
     e.preventDefault();
@@ -132,35 +124,8 @@ const NewObjectiveForm = () => {
         />
       </label>
 
-      <label>
-        Tag Type:
-        <input
-          type="text"
-          value={newTagType}
-          onChange={(e) => setNewTagType(e.target.value)}
-          placeholder="e.g. location"
-        />
-      </label>
-      <label>
-        Tag Name:
-        <input
-          type="text"
-          value={newTagName}
-          onChange={(e) => setNewTagName(e.target.value)}
-          placeholder="e.g. Saint Denis"
-        />
-      </label>
-      <button type="button" onClick={handleAddTag}>
-        Add Tag
-      </button>
+      <TagEditor objective={{ tags: newTags }} onUpdateTags={(t) => setNewTags(t)} />
 
-      {newTags.length > 0 && (
-        <TagList>
-          {newTags.map((tag, idx) => (
-            <li key={idx}>{`${tag.type}: ${tag.value}`}</li>
-          ))}
-        </TagList>
-      )}
       <button type="submit">Add Objective</button>
     </FormContainer>
   );
