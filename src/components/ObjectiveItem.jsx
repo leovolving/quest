@@ -109,6 +109,27 @@ const CancelButton = styled(Button)`
   }
 `;
 
+const ProgressText = styled.span`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const ProgressControls = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+
+  button {
+    background: #666;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+`;
+
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
   const { selectedGame, setGames, setSelectedGame } = useGameContext();
@@ -124,6 +145,34 @@ const ObjectiveItem = ({ objective }) => {
     e.preventDefault();
     updateObjective({ ...objective, title, notes });
     toggleIsEditing();
+  };
+
+  const handleProgressChange = (delta) => {
+    const updatedCategories = selectedGame.categories.map((cat) => {
+      const updatedObjectives = cat.objectives.map((obj) => {
+        if (obj.id !== objective.id) return obj;
+
+        const updatedCurrent = Math.max(
+          0,
+          Math.min((obj.progress?.current || 0) + delta, obj.progress?.total || 0)
+        );
+
+        return {
+          ...obj,
+          progress: {
+            ...obj.progress,
+            current: updatedCurrent,
+          },
+          completed: updatedCurrent >= obj.progress.total,
+        };
+      });
+
+      return { ...cat, objectives: updatedObjectives };
+    });
+
+    const updatedGame = { ...selectedGame, categories: updatedCategories };
+    setGames((prev) => prev.map((g) => (g.id === selectedGame.id ? updatedGame : g)));
+    setSelectedGame(updatedGame);
   };
 
   const updateObjective = (updatedObj) => {
@@ -174,6 +223,17 @@ const ObjectiveItem = ({ objective }) => {
           <>
             <Title>{objective.title}</Title>
             {objective.notes && <Note> - {objective.notes}</Note>}
+            {objective.progress && (
+              <>
+                <ProgressText>
+                  Progress: {objective.progress.current} / {objective.progress.total}
+                </ProgressText>
+                <ProgressControls>
+                  <button onClick={() => handleProgressChange(-1)}>-</button>
+                  <button onClick={() => handleProgressChange(1)}>+</button>
+                </ProgressControls>
+              </>
+            )}
             <EditButton onClick={toggleIsEditing}>Edit</EditButton>
             <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
           </>

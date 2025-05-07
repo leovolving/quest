@@ -63,6 +63,8 @@ const NewObjectiveForm = () => {
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
   const [selectedCategoryName, setSelectedCategoryName] = useState(game.categories[0]?.name || '');
   const [newTags, setNewTags] = useState([]);
+  const [progressCurrent, setProgressCurrent] = useState('');
+  const [progressTotal, setProgressTotal] = useState('');
 
   const uniqueCategoryNames = Array.from(new Set(game.categories.map((cat) => cat.name)));
 
@@ -85,21 +87,27 @@ const NewObjectiveForm = () => {
       updatedCategories = [...game.categories];
     }
 
+    const newObjective = {
+      id: `${category.id}-${category.objectives.length + 1}`,
+      title: newObjectiveTitle,
+      completed: false,
+      notes: newObjectiveNote,
+      tags: newTags,
+      categoryId: category.id,
+    };
+
+    if (progressTotal) {
+      newObjective.progress = {
+        current: parseInt(progressCurrent || '0', 10),
+        total: parseInt(progressTotal, 10),
+      };
+    }
+
     updatedCategories = updatedCategories.map((cat) => {
       if (cat.name !== selectedCategoryName) return cat;
       return {
         ...cat,
-        objectives: [
-          ...cat.objectives,
-          {
-            id: `${cat.id}-${cat.objectives.length + 1}`,
-            title: newObjectiveTitle,
-            completed: false,
-            notes: newObjectiveNote,
-            tags: newTags,
-            categoryId: cat.id,
-          },
-        ],
+        objectives: [...cat.objectives, newObjective],
       };
     });
 
@@ -109,6 +117,8 @@ const NewObjectiveForm = () => {
     setNewObjectiveTitle('');
     setNewObjectiveNote('');
     setNewTags([]);
+    setProgressCurrent('');
+    setProgressTotal('');
   };
 
   return (
@@ -144,6 +154,26 @@ const NewObjectiveForm = () => {
           onChange={(e) => setNewObjectiveNote(e.target.value)}
           placeholder="Optional note"
         />
+      </label>
+      <label>
+        Progress:
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <input
+            type="number"
+            min="0"
+            value={progressCurrent}
+            onChange={(e) => setProgressCurrent(e.target.value)}
+            placeholder="Current"
+          />
+          <span>/</span>
+          <input
+            type="number"
+            min="1"
+            value={progressTotal}
+            onChange={(e) => setProgressTotal(e.target.value)}
+            placeholder="Total"
+          />
+        </div>
       </label>
 
       <TagEditor objective={{ tags: newTags }} onUpdateTags={(t) => setNewTags(t)} />
