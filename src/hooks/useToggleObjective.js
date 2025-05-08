@@ -1,9 +1,12 @@
 // src/hooks/useToggleObjective.js
 import { useCallback } from 'react';
+
 import { useGameContext } from '../context/GameContext';
+import useGameDataService from '../services/gameDataService';
 
 const useToggleObjective = () => {
-  const { games, selectedGame, setGames, setSelectedGame } = useGameContext();
+  const { games, selectedGame } = useGameContext();
+  const { updateGame } = useGameDataService();
 
   return useCallback(
     (objective) => {
@@ -31,10 +34,9 @@ const useToggleObjective = () => {
       });
 
       const updatedGame = updatedGames.find((g) => g.id === selectedGame.id);
-      setGames(updatedGames);
-      setSelectedGame(updatedGame);
+      updateGame(updatedGame);
     },
-    [games, selectedGame, setGames, setSelectedGame]
+    [games, selectedGame, updateGame]
   );
 };
 

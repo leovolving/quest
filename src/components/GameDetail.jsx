@@ -2,11 +2,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useGameContext } from '../context/GameContext';
+import useGameDataService from '../services/gameDataService';
+
 import CategoryList from './CategoryList';
 import TagView from './TagView';
 import NewObjectiveForm from './forms/NewObjectiveForm';
-
-import { useGameContext } from '../context/GameContext';
 
 const BackButton = styled.button`
   display: flex;
@@ -84,7 +85,8 @@ const Checkbox = styled.input`
 const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
-  const { selectedGame: game, setSelectedGame, setGames } = useGameContext();
+  const { selectedGame: game, setSelectedGameId, setGames } = useGameContext();
+  const { updateGame } = useGameDataService();
 
   const tagTypes = Array.from(
     new Set(
@@ -108,13 +110,13 @@ const GameDetail = () => {
 
   const onUpdateStatus = (e) => {
     const updatedGame = { ...game, status: e.target.value };
-    setSelectedGame(updatedGame);
+    updateGame(updatedGame);
     setGames((prev) => prev.map((g) => (g.id === game.id ? updatedGame : g)));
   };
 
   return (
     <div>
-      <BackButton onClick={() => setSelectedGame(null)}>← Back to Games</BackButton>
+      <BackButton onClick={() => setSelectedGameId(null)}>← Back to Games</BackButton>
 
       <GameHeader>
         <GameTitle>{game.name}</GameTitle>

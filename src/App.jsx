@@ -1,7 +1,10 @@
 // src/App.jsx
 import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+
 import { useGameContext } from './context/GameContext';
+import useGameDataService from './services/gameDataService';
+
 import GameDashboard from './components/GameDashboard';
 import GameDetail from './components/GameDetail';
 
@@ -153,11 +156,15 @@ const ThemeToggle = styled.button`
 
 function App() {
   const { selectedGame } = useGameContext();
+  const { initialize } = useGameDataService();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     setIsDarkMode(prefersDark);
+
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

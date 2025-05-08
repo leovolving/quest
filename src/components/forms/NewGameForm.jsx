@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { FocusTrap } from 'focus-trap-react';
 
-import { useGameContext } from '../../context/GameContext';
+import useGameDataService from '../../services/gameDataService';
 
 const Overlay = styled.div`
   position: fixed;
@@ -96,7 +96,7 @@ const SubmitButton = styled.button`
 `;
 
 const NewGameForm = ({ isOpen, onClose }) => {
-  const { games, setGames } = useGameContext();
+  const { addNewGame } = useGameDataService();
   const [gameName, setGameName] = useState('');
   const [gameStatus, setGameStatus] = useState('currently-playing');
 
@@ -108,14 +108,13 @@ const NewGameForm = ({ isOpen, onClose }) => {
     }
 
     const newGame = {
-      id: games.length + 1,
       name: gameName,
       status: gameStatus,
       progress: { completed: 0, total: 0 },
       categories: [],
     };
 
-    setGames([...games, newGame]);
+    addNewGame(newGame);
     setGameName('');
     setGameStatus('currently-playing');
     onClose();

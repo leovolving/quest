@@ -6,6 +6,7 @@ import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 import useToggleObjective from '../hooks/useToggleObjective';
 
 import { useGameContext } from '../context/GameContext';
+import useGameDataService from '../services/gameDataService';
 
 import TagEditor from './forms/TagEditor';
 
@@ -132,7 +133,9 @@ const ProgressControls = styled.div`
 
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
-  const { selectedGame, setGames, setSelectedGame } = useGameContext();
+  const { selectedGame } = useGameContext();
+  const { updateGame } = useGameDataService();
+
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
   const [title, setTitle] = useState(objective.title);
   const [notes, setNotes] = useState(objective.notes || '');
@@ -171,8 +174,7 @@ const ObjectiveItem = ({ objective }) => {
     });
 
     const updatedGame = { ...selectedGame, categories: updatedCategories };
-    setGames((prev) => prev.map((g) => (g.id === selectedGame.id ? updatedGame : g)));
-    setSelectedGame(updatedGame);
+    updateGame(updatedGame);
   };
 
   const updateObjective = (updatedObj) => {
@@ -189,10 +191,7 @@ const ObjectiveItem = ({ objective }) => {
             }
       ),
     };
-    setSelectedGame(updatedGame);
-    setGames((prevGames) =>
-      prevGames.map((game) => (game.id !== selectedGame.id ? game : updatedGame))
-    );
+    updateGame(updatedGame);
   };
 
   const handleTagUpdate = (newTags) => {

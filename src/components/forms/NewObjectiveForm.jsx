@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import TagEditor from './TagEditor';
-
 import { useGameContext } from '../../context/GameContext';
+import useGameDataService from '../../services/gameDataService';
+
+import TagEditor from './TagEditor';
 
 const FormContainer = styled.form`
   margin-top: 2rem;
@@ -57,7 +58,8 @@ const TagList = styled.ul`
 `;
 
 const NewObjectiveForm = () => {
-  const { selectedGame: game, setGames, setSelectedGame } = useGameContext();
+  const { selectedGame: game } = useGameContext();
+  const { updateGame } = useGameDataService();
 
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
@@ -112,8 +114,8 @@ const NewObjectiveForm = () => {
     });
 
     const updatedGame = { ...game, categories: updatedCategories };
-    setGames((prev) => prev.map((g) => (g.id === game.id ? updatedGame : g)));
-    setSelectedGame(updatedGame);
+
+    updateGame(updatedGame);
     setNewObjectiveTitle('');
     setNewObjectiveNote('');
     setNewTags([]);

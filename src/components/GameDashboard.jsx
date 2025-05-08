@@ -117,7 +117,7 @@ const StatusTitle = styled.h2`
 `;
 
 const GameDashboard = () => {
-  const { games, setSelectedGame } = useGameContext();
+  const { games, setSelectedGameId } = useGameContext();
   const [isNewGameFormOpen, toggleIsNewGameFormOpen] = useStateToggleBoolean(false);
 
   const groupedGames = games.reduce((acc, game) => {
@@ -138,7 +138,7 @@ const GameDashboard = () => {
         <GameCard key={status}>
           <StatusTitle>{status.replace(/-/g, ' ')}</StatusTitle>
           {games.map((game) => (
-            <GameCardButton key={game.id} onClick={() => setSelectedGame(game)}>
+            <GameCardButton key={game.id} onClick={() => setSelectedGameId(game.id)}>
               <h3>{game.name}</h3>
               <p>{game.categories.length} categories</p>
               <progress value={game.progress.completed} max={game.progress.total} />
