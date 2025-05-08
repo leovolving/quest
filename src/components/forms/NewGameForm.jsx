@@ -100,6 +100,12 @@ const NewGameForm = ({ isOpen, onClose }) => {
   const [gameName, setGameName] = useState('');
   const [gameStatus, setGameStatus] = useState('currently-playing');
 
+  const resetForm = () => {
+    setGameName('');
+    setGameStatus('currently-playing');
+    onClose();
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -114,10 +120,7 @@ const NewGameForm = ({ isOpen, onClose }) => {
       categories: [],
     };
 
-    addNewGame(newGame);
-    setGameName('');
-    setGameStatus('currently-playing');
-    onClose();
+    addNewGame(newGame, { onSuccess: resetForm });
   };
 
   if (!isOpen) return null;

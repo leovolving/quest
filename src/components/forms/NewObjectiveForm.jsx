@@ -70,6 +70,14 @@ const NewObjectiveForm = () => {
 
   const uniqueCategoryNames = Array.from(new Set(game.categories.map((cat) => cat.name)));
 
+  const resetForm = () => {
+    setNewObjectiveTitle('');
+    setNewObjectiveNote('');
+    setNewTags([]);
+    setProgressCurrent('');
+    setProgressTotal('');
+  };
+
   const handleAddObjective = (e) => {
     e.preventDefault();
     if (!newObjectiveTitle || !selectedCategoryName) return;
@@ -115,12 +123,7 @@ const NewObjectiveForm = () => {
 
     const updatedGame = { ...game, categories: updatedCategories };
 
-    updateGame(updatedGame);
-    setNewObjectiveTitle('');
-    setNewObjectiveNote('');
-    setNewTags([]);
-    setProgressCurrent('');
-    setProgressTotal('');
+    updateGame(updatedGame, { onSuccess: resetForm });
   };
 
   return (

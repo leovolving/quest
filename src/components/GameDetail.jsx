@@ -85,7 +85,7 @@ const Checkbox = styled.input`
 const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
-  const { selectedGame: game, setSelectedGameId, setGames } = useGameContext();
+  const { selectedGame: game, setSelectedGameId } = useGameContext();
   const { updateGame } = useGameDataService();
 
   const tagTypes = Array.from(
@@ -111,7 +111,6 @@ const GameDetail = () => {
   const onUpdateStatus = (e) => {
     const updatedGame = { ...game, status: e.target.value };
     updateGame(updatedGame);
-    setGames((prev) => prev.map((g) => (g.id === game.id ? updatedGame : g)));
   };
 
   return (

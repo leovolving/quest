@@ -27,15 +27,22 @@ const useGameDataService = () => {
     }
   };
 
-  const addNewGame = (newGame) => {
+  const addNewGame = (newGame, options = {}) => {
+    const { onSuccess } = options;
     newGame.id = games.length + 1;
     saveGames([...games, newGame]);
+    if (typeof onSuccess === 'function') {
+      onSuccess();
+    }
   };
 
-  const updateGame = (updatedGame) => {
+  const updateGame = (updatedGame, options = {}) => {
+    const { onSuccess } = options;
     const updated = games.map((g) => (g.id === updatedGame.id ? updatedGame : g));
     saveGames(updated);
-    return updated;
+    if (typeof onSuccess === 'function') {
+      onSuccess();
+    }
   };
 
   const initialize = () => {
@@ -44,7 +51,7 @@ const useGameDataService = () => {
     setGames(allCurrentGames);
   };
 
-  return { addNewGame, initialize, saveGames, updateGame };
+  return { addNewGame, initialize, updateGame };
 };
 
 export default useGameDataService;
