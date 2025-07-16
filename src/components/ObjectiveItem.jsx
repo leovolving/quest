@@ -9,6 +9,7 @@ import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
 
 import TagEditor from './forms/TagEditor';
+import TagsList from './common/TagsList';
 
 const Wrapper = styled.div`
   display: flex;
@@ -211,6 +212,7 @@ const ObjectiveItem = ({ objective }) => {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
+            <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
             <ButtonGroup>
               <SaveButton type="submit">Save</SaveButton>
               <CancelButton type="button" onClick={toggleIsEditing}>
@@ -234,7 +236,7 @@ const ObjectiveItem = ({ objective }) => {
               </>
             )}
             <EditButton onClick={toggleIsEditing}>Edit</EditButton>
-            <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
+            <TagsList tags={objective.tags} />
           </>
         )}
       </Content>

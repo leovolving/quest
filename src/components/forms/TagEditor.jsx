@@ -1,18 +1,14 @@
 // src/components/TagEditor.jsx
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
+import { TagRow } from '../sharedStyledComponents';
+
 import { useGameContext } from '../../context/GameContext';
+import TagsList from '../common/TagsList';
 
 const Wrapper = styled.div`
   margin-top: 0.5rem;
-`;
-
-const TagRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
 `;
 
 const Input = styled.input`
@@ -75,12 +71,7 @@ const TagEditor = ({ objective = {}, onUpdateTags }) => {
 
   return (
     <Wrapper>
-      {objective.tags?.map((tag, idx) => (
-        <TagRow key={idx}>
-          <span>{tag.type}:</span>
-          <strong>{tag.value}</strong>
-        </TagRow>
-      ))}
+      <TagsList tags={objective.tags} />
       <TagRow>
         <Input
           list="tag-types"
