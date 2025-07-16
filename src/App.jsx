@@ -12,6 +12,15 @@ const AppContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${({ theme }) => theme.spacing.xl};
+  width: 100%;
+
+  @media (max-width: 900px) {
+    padding: ${({ theme }) => theme.spacing.lg};
+    max-width: 100vw;
+  }
+  @media (max-width: 600px) {
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 function App() {

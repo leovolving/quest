@@ -9,6 +9,11 @@ const Category = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 600px) {
+    padding: ${({ theme }) => theme.spacing.md};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const CategoryTitle = styled.h3`
@@ -16,6 +21,11 @@ const CategoryTitle = styled.h3`
   color: ${({ theme }) => theme.colors.text};
   font-size: 1.25rem;
   font-weight: 600;
+
+  @media (max-width: 600px) {
+    font-size: 1.1rem;
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 const EmptyMessage = styled.em`

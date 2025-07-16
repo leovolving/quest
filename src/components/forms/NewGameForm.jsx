@@ -22,12 +22,21 @@ const DialogBox = styled.div`
   max-width: 400px;
   width: 100%;
   box-shadow: ${({ theme }) => theme.shadows.lg};
+
+  @media (max-width: 600px) {
+    padding: ${({ theme }) => theme.spacing.md};
+    max-width: 95vw;
+  }
 `;
 
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 600px) {
+    gap: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 const FormTitle = styled.h2`

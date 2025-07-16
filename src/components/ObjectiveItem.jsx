@@ -22,6 +22,12 @@ const Wrapper = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.colors.cardHover};
   }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: ${({ theme }) => theme.spacing.xs};
+    padding: ${({ theme }) => theme.spacing.xs};
+  }
 `;
 
 const Checkbox = styled.input`

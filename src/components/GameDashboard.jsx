@@ -11,6 +11,15 @@ const Dashboard = styled.div`
   display: grid;
   gap: ${({ theme }) => theme.spacing.lg};
   padding: ${({ theme }) => theme.spacing.xl} 0;
+
+  @media (max-width: 900px) {
+    gap: ${({ theme }) => theme.spacing.md};
+    padding: ${({ theme }) => theme.spacing.lg} 0;
+  }
+  @media (max-width: 600px) {
+    gap: ${({ theme }) => theme.spacing.sm};
+    padding: ${({ theme }) => theme.spacing.md} 0;
+  }
 `;
 
 const Header = styled.div`
@@ -23,6 +32,14 @@ const Header = styled.div`
   background-color: ${({ theme }) => theme.colors.cardBg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.sm};
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: ${({ theme }) => theme.spacing.sm};
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 const Title = styled.h1`
@@ -57,6 +74,10 @@ const GameCard = styled.div`
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.shadows.lg};
+  }
+
+  @media (max-width: 600px) {
+    padding: ${({ theme }) => theme.spacing.md};
   }
 `;
 
