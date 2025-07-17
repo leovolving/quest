@@ -1,8 +1,8 @@
 // src/App.jsx
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { Route, Routes } from 'react-router-dom';
 
-import { useGameContext } from './context/GameContext';
 import useGameDataService from './services/gameDataService';
 
 import GameDashboard from './components/GameDashboard';
@@ -24,7 +24,6 @@ const AppContainer = styled.div`
 `;
 
 function App() {
-  const { selectedGame } = useGameContext();
   const { initialize } = useGameDataService();
 
   useEffect(() => {
@@ -32,7 +31,14 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <AppContainer>{selectedGame ? <GameDetail /> : <GameDashboard />}</AppContainer>;
+  return (
+    <AppContainer>
+      <Routes>
+        <Route path="/game/:gameId" element={<GameDetail />} />
+        <Route path="/" element={<GameDashboard />} />
+      </Routes>
+    </AppContainer>
+  );
 }
 
 export default App;

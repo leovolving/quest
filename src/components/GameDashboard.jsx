@@ -1,6 +1,7 @@
 // src/components/GameDashboard.jsx
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
@@ -81,7 +82,7 @@ const GameCard = styled.div`
   }
 `;
 
-const GameCardButton = styled.button`
+const GameCardButton = styled(Link)`
   display: block;
   width: 100%;
   text-align: left;
@@ -92,6 +93,7 @@ const GameCardButton = styled.button`
   border-radius: ${({ theme }) => theme.borderRadius.md};
   cursor: pointer;
   color: ${({ theme }) => theme.colors.text};
+  text-decoration: none;
   transition: all 0.2s ease-in-out;
 
   h3 {
@@ -138,7 +140,7 @@ const StatusTitle = styled.h2`
 `;
 
 const GameDashboard = () => {
-  const { games, setSelectedGameId } = useGameContext();
+  const { games } = useGameContext();
   const [isNewGameFormOpen, toggleIsNewGameFormOpen] = useStateToggleBoolean(false);
 
   const groupedGames = games.reduce((acc, game) => {
@@ -159,7 +161,7 @@ const GameDashboard = () => {
         <GameCard key={status}>
           <StatusTitle>{status.replace(/-/g, ' ')}</StatusTitle>
           {games.map((game) => (
-            <GameCardButton key={game.id} onClick={() => setSelectedGameId(game.id)}>
+            <GameCardButton key={game.id} to={`/game/${game.id}`}>
               <h3>{game.name}</h3>
               <p>{game.categories.length} categories</p>
               <progress value={game.progress.completed} max={game.progress.total} />

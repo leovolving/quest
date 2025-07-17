@@ -1,6 +1,7 @@
 // src/components/GameDetail.js
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
@@ -9,7 +10,7 @@ import CategoryList from './CategoryList';
 import TagView from './TagView';
 import NewObjectiveForm from './forms/NewObjectiveForm';
 
-const BackButton = styled.button`
+const BackLink = styled(Link)`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
@@ -20,6 +21,10 @@ const BackButton = styled.button`
   border-radius: ${({ theme }) => theme.borderRadius.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   font-weight: 500;
+  text-decoration: none;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.cardHover};
@@ -85,8 +90,17 @@ const Checkbox = styled.input`
 const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
-  const { selectedGame: game, setSelectedGameId } = useGameContext();
+  const { selectedGame: game } = useGameContext();
   const { updateGame } = useGameDataService();
+
+  if (!game) {
+    return (
+      <div>
+        <BackLink to="/">← Back to Games</BackLink>
+        <p>Game not found.</p>
+      </div>
+    );
+  }
 
   const tagTypes = Array.from(
     new Set(
@@ -115,8 +129,7 @@ const GameDetail = () => {
 
   return (
     <div>
-      <BackButton onClick={() => setSelectedGameId(null)}>← Back to Games</BackButton>
-
+      <BackLink to="/">← Back to Games</BackLink>
       <GameHeader>
         <GameTitle>{game.name}</GameTitle>
         <StatusSelect value={game.status || 'not-played'} onChange={onUpdateStatus}>
