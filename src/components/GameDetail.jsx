@@ -37,6 +37,8 @@ const GameHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.lg};
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const GameTitle = styled.h1`

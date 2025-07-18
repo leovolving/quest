@@ -14,14 +14,10 @@ const FormContainer = styled.form`
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 
   label {
-    display: flex;
-    flex-direction: column;
     font-weight: bold;
+    margin-top: 1rem;
   }
 
   input,
@@ -30,6 +26,10 @@ const FormContainer = styled.form`
     padding: 0.5rem;
     border: 1px solid #aaa;
     border-radius: 4px;
+    display: block;
+    margin-top: 8px;
+    min-width: 0;
+    align-items: center;
   }
 
   button {
@@ -37,20 +37,10 @@ const FormContainer = styled.form`
   }
 `;
 
-const TagList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
+const InputContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
-
-  li {
-    background: ${({ theme }) => (theme.mode === 'dark' ? '#444' : '#eee')};
-    color: ${({ theme }) => (theme.mode === 'dark' ? '#fff' : '#000')};
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-  }
+  align-items: center;
 `;
 
 const NewObjectiveForm = () => {
@@ -158,7 +148,7 @@ const NewObjectiveForm = () => {
       </label>
       <label>
         Progress:
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <InputContainer>
           <input
             type="number"
             min="0"
@@ -174,9 +164,9 @@ const NewObjectiveForm = () => {
             onChange={(e) => setProgressTotal(e.target.value)}
             placeholder="Total"
           />
-        </div>
+        </InputContainer>
       </label>
-
+      <h4>Tags</h4>
       <TagEditor objective={{ tags: newTags }} onUpdateTags={(t) => setNewTags(t)} />
 
       <Button type="submit" variant="primary">
