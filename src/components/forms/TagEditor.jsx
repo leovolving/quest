@@ -2,6 +2,8 @@
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
+import { Button } from '../../components/_ds';
+
 import { TagRow } from '../sharedStyledComponents';
 
 import { useGameContext } from '../../context/GameContext';
@@ -17,19 +19,6 @@ const Input = styled.input`
   border-radius: 4px;
   background-color: ${({ theme }) => theme.inputBackground};
   color: ${({ theme }) => theme.text};
-`;
-
-const Button = styled.button`
-  padding: 0.25rem 0.5rem;
-  background-color: ${({ theme }) => theme.primary};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.primaryHover};
-  }
 `;
 
 const TagEditor = ({ objective = {}, onUpdateTags }) => {
@@ -97,7 +86,7 @@ const TagEditor = ({ objective = {}, onUpdateTags }) => {
           ))}
         </datalist>
 
-        <Button type="button" onClick={handleAddTag}>
+        <Button variant="tertiary" onClick={handleAddTag}>
           Add Tag
         </Button>
       </TagRow>

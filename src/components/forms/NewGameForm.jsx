@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { FocusTrap } from 'focus-trap-react';
 
+import { Button } from '../_ds';
+
 import useGameDataService from '../../services/gameDataService';
 
 const Overlay = styled.div`
@@ -86,24 +88,6 @@ const SelectField = styled.select`
   }
 `;
 
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme }) => theme.colors.success};
-  color: white;
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-weight: 500;
-  margin-top: ${({ theme }) => theme.spacing.md};
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.successHover};
-    transform: translateY(-1px);
-  }
-`;
-
 const NewGameForm = ({ isOpen, onClose }) => {
   const { addNewGame } = useGameDataService();
   const [gameName, setGameName] = useState('');
@@ -152,7 +136,9 @@ const NewGameForm = ({ isOpen, onClose }) => {
               <option value="not-played">Not Played</option>
               <option value="beaten-game">Beaten</option>
             </SelectField>
-            <SubmitButton type="submit">Add Game</SubmitButton>
+            <Button type="submit" variant="secondary">
+              Add Game
+            </Button>
           </FormContainer>
         </DialogBox>
       </Overlay>

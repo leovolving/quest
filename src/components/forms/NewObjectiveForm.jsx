@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { Button } from '../../components/_ds';
+
 import { useGameContext } from '../../context/GameContext';
 import useGameDataService from '../../services/gameDataService';
 
@@ -32,12 +34,6 @@ const FormContainer = styled.form`
 
   button {
     align-self: flex-start;
-    padding: 0.5rem 1rem;
-    border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
   }
 `;
 
@@ -183,7 +179,9 @@ const NewObjectiveForm = () => {
 
       <TagEditor objective={{ tags: newTags }} onUpdateTags={(t) => setNewTags(t)} />
 
-      <button type="submit">Add Objective</button>
+      <Button type="submit" variant="primary">
+        Add Objective
+      </Button>
     </FormContainer>
   );
 };

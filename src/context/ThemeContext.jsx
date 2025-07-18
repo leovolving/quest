@@ -1,27 +1,29 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
+
+import { Button } from '../components/_ds';
 
 useStateToggleBoolean;
 
 const lightTheme = {
   colors: {
-    primary: '#2563eb',
-    primaryHover: '#1d4ed8',
-    secondary: '#64748b',
-    success: '#22c55e',
-    successHover: '#16a34a',
-    background: '#ffffff',
-    cardBg: '#f8fafc',
-    cardHover: '#f1f5f9',
-    text: '#1e293b',
-    textSecondary: '#64748b',
-    border: '#e2e8f0',
-    inputBackground: '#ffffff',
-    inputBorder: '#cbd5e1',
-    inputText: '#1e293b',
-    inputPlaceholder: '#94a3b8',
+    primary: '#C75C00',
+    primaryHover: '#E67300',
+    secondary: '#1E2A38',
+    success: '#207544',
+    successHover: '#2F8F56',
+    background: '#FFFFFF',
+    cardBg: '#F3F3F3',
+    cardHover: '#E6E6E6',
+    text: '#1A1A1A',
+    textSecondary: '#4A4A4A',
+    border: '#D0D7DE',
+    inputBackground: '#FFFFFF',
+    inputBorder: '#C9D1D9',
+    inputText: '#1A1A1A',
+    inputPlaceholder: '#6A737D',
   },
   spacing: {
     xs: '0.25rem',
@@ -40,25 +42,51 @@ const lightTheme = {
     md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
   },
+  buttons: {
+    secondary: {
+      text: '#1E556C',
+      border: '2px solid #1E556C',
+      bg: ({ theme }) => theme.colors.background,
+      hover: '#ECF6F8',
+      active: '#8C6600',
+      disabledBg: '#E5C98C',
+      disabledText: '#888888',
+    },
+    primary: {
+      bg: '#1E556C',
+      text: '#FFFFFF',
+      hover: '#3D8FBA',
+      active: '#246380',
+      disabledBg: '#A9CFE5',
+      disabledText: '#888888',
+    },
+    tertiary: {
+      text: '#1A1A1A',
+      hoverText: '#4A4A4A',
+      activeText: '#000000',
+      hoverBg: '#F3F3F3',
+      activeBg: '#E6E6E6',
+    },
+  },
 };
 
 const darkTheme = {
   colors: {
-    primary: '#3b82f6',
-    primaryHover: '#2563eb',
-    secondary: '#94a3b8',
-    success: '#22c55e',
-    successHover: '#16a34a',
-    background: '#0f172a',
-    cardBg: '#1e293b',
-    cardHover: '#334155',
-    text: '#f8fafc',
-    textSecondary: '#cbd5e1',
-    border: '#334155',
-    inputBackground: '#1e293b',
-    inputBorder: '#475569',
-    inputText: '#f8fafc',
-    inputPlaceholder: '#94a3b8',
+    primary: '#FFA500',
+    primaryHover: '#FFB733',
+    secondary: '#2D2F36',
+    success: '#48C774',
+    successHover: '#5ED48A',
+    background: '#0D1117',
+    cardBg: '#161B22',
+    cardHover: '#1E242D',
+    text: '#FFFFFF',
+    textSecondary: '#C9D1D9',
+    border: '#30363D',
+    inputBackground: '#21262D',
+    inputBorder: '#444C56',
+    inputText: '#FFFFFF',
+    inputPlaceholder: '#8B949E',
   },
   spacing: {
     xs: '0.25rem',
@@ -76,6 +104,27 @@ const darkTheme = {
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.1)',
     md: '0 4px 6px -1px rgb(0 0 0 / 0.2)',
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.2)',
+  },
+  buttons: {
+    primary: {
+      bg: ({ theme }) => theme.colors.primary,
+      text: ({ theme }) => theme.colors.background,
+      hover: '#DDAF26',
+      active: '#A87C00',
+    },
+    secondary: {
+      text: ({ theme }) => theme.colors.primary,
+      bg: ({ theme }) => theme.colors.background,
+      border: ({ theme }) => `2px solid ${theme.colors.primary}`,
+      hover: '#272B3F',
+      active: '#246380',
+      fontWeight: 'bold',
+    },
+    tertiary: {
+      text: '#F9F9F9',
+      hoverBg: '#1E2A38',
+      activeBg: '#273445',
+    },
   },
 };
 
@@ -128,21 +177,11 @@ const GlobalStyle = createGlobalStyle`
     }
   `;
 
-const ThemeToggle = styled.button`
+const ThemeToggle = styled(Button)`
   position: fixed;
   top: ${({ theme }) => theme.spacing.md};
   right: ${({ theme }) => theme.spacing.md};
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
   box-shadow: ${({ theme }) => theme.shadows.sm};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryHover};
-    transform: translateY(-1px);
-  }
 `;
 
 const ThemeContextProvider = ({ children }) => {
@@ -157,7 +196,7 @@ const ThemeContextProvider = ({ children }) => {
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <GlobalStyle />
-      <ThemeToggle onClick={toggleIsDarkMode}>
+      <ThemeToggle variant="tertiary" onClick={toggleIsDarkMode}>
         {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
       </ThemeToggle>
       {children}

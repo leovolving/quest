@@ -3,6 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import { Button } from '../components/_ds';
+
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 
@@ -48,21 +50,6 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.colors.text};
   font-size: 2rem;
   font-weight: 600;
-`;
-
-const NewGameButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme }) => theme.colors.success};
-  color: white;
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-weight: 500;
-  box-shadow: ${({ theme }) => theme.shadows.sm};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.successHover};
-    transform: translateY(-1px);
-  }
 `;
 
 const GameCard = styled.div`
@@ -154,7 +141,9 @@ const GameDashboard = () => {
     <Dashboard>
       <Header>
         <Title>Your Games</Title>
-        <NewGameButton onClick={toggleIsNewGameFormOpen}>+ Add new game</NewGameButton>
+        <Button variant="secondary" onClick={toggleIsNewGameFormOpen}>
+          + Add new game
+        </Button>
       </Header>
       <NewGameForm isOpen={isNewGameFormOpen} onClose={toggleIsNewGameFormOpen} />
       {Object.entries(groupedGames).map(([status, games]) => (
