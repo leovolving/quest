@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Link } from 'react-router-dom';
 
 import useGameDataService from './services/gameDataService';
 
@@ -23,6 +23,8 @@ const AppContainer = styled.div`
   }
 `;
 
+const GlobalNav = styled.nav``;
+
 function App() {
   const { initialize } = useGameDataService();
 
@@ -33,6 +35,11 @@ function App() {
 
   return (
     <AppContainer>
+      <GlobalNav>
+        <Link to="/">
+          <img src="/trackquest_banner_v2.png" width="300" />
+        </Link>
+      </GlobalNav>
       <Routes>
         <Route path="/game/:gameId" element={<GameDetail />} />
         <Route path="/" element={<GameDashboard />} />
