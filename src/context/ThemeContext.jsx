@@ -179,7 +179,7 @@ const GlobalStyle = createGlobalStyle`
 
 const ThemeToggle = styled(Button)`
   position: fixed;
-  top: ${({ theme }) => theme.spacing.md};
+  bottom: ${({ theme }) => theme.spacing.md};
   right: ${({ theme }) => theme.spacing.md};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
@@ -197,7 +197,7 @@ const ThemeContextProvider = ({ children }) => {
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <GlobalStyle />
       <ThemeToggle variant="tertiary" onClick={toggleIsDarkMode}>
-        {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        {isDarkMode ? '☀️ Light mode' : '🌙 Dark mode'}
       </ThemeToggle>
       {children}
     </ThemeProvider>

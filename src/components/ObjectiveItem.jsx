@@ -1,5 +1,4 @@
-// src/components/ObjectiveItem.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
@@ -11,22 +10,22 @@ import useGameDataService from '../services/gameDataService';
 import TagEditor from './forms/TagEditor';
 import TagsList from './common/TagsList';
 
+import { Button } from './_ds';
+
 const Wrapper = styled.div`
   display: flex;
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.sm};
-  padding: ${({ theme }) => theme.spacing.sm};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.sm};
   transition: background-color 0.2s ease-in-out;
 
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.cardHover};
+  &:not(:last-of-type) {
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   }
 
   @media (max-width: 600px) {
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.xs};
-    padding: ${({ theme }) => theme.spacing.xs};
   }
 `;
 
@@ -49,18 +48,9 @@ const Note = styled.em`
   margin-left: ${({ theme }) => theme.spacing.xs};
 `;
 
-const EditButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: 0.875rem;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
+const EditButton = styled(Button)`
+  display: block;
+  margin-top: ${({ theme }) => theme.spacing.md} 0;
 `;
 
 const Form = styled.form`
@@ -87,34 +77,6 @@ const Input = styled.input`
 const ButtonGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
-`;
-
-const Button = styled.button`
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: 0.875rem;
-  font-weight: 500;
-`;
-
-const SaveButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-  border: none;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryHover};
-  }
-`;
-
-const CancelButton = styled(Button)`
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.text};
-    border-color: ${({ theme }) => theme.colors.text};
-  }
 `;
 
 const ProgressText = styled.span`
@@ -207,10 +169,13 @@ const ObjectiveItem = ({ objective }) => {
 
   return (
     <Wrapper>
-      <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
       <Content>
         {isEditing ? (
           <Form onSubmit={handleEditSubmit}>
+            <label>
+              <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
+              Complete?
+            </label>
             <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
             <Input
               type="text"
@@ -220,16 +185,21 @@ const ObjectiveItem = ({ objective }) => {
             />
             <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
             <ButtonGroup>
-              <SaveButton type="submit">Save</SaveButton>
-              <CancelButton type="button" onClick={toggleIsEditing}>
+              <Button type="submit" variant="primary">
+                Save
+              </Button>
+              <Button type="button" onClick={toggleIsEditing} variant="secondary">
                 Cancel
-              </CancelButton>
+              </Button>
             </ButtonGroup>
           </Form>
         ) : (
           <>
-            <Title>{objective.title}</Title>
-            {objective.notes && <Note> - {objective.notes}</Note>}
+            <label>
+              <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
+              <Title>{objective.title}</Title>
+            </label>
+
             {objective.progress && (
               <>
                 <ProgressText>
@@ -241,8 +211,11 @@ const ObjectiveItem = ({ objective }) => {
                 </ProgressControls>
               </>
             )}
-            <EditButton onClick={toggleIsEditing}>Edit</EditButton>
             <TagsList tags={objective.tags} />
+            {objective.notes && <Note>{objective.notes}</Note>}
+            <EditButton onClick={toggleIsEditing} variant="tertiary">
+              Edit objective
+            </EditButton>
           </>
         )}
       </Content>

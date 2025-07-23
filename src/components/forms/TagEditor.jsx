@@ -4,13 +4,18 @@ import styled from 'styled-components';
 
 import { Button } from '../../components/_ds';
 
-import { TagRow } from '../sharedStyledComponents';
-
 import { useGameContext } from '../../context/GameContext';
 import TagsList from '../common/TagsList';
 
 const Wrapper = styled.div`
   margin-top: 0.5rem;
+`;
+
+export const TagForm = styled.ul`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 const Input = styled.input`
@@ -22,21 +27,9 @@ const Input = styled.input`
 `;
 
 const TagEditor = ({ objective = {}, onUpdateTags }) => {
-  const { games, selectedGame } = useGameContext();
+  const { allTagTypes, selectedGame } = useGameContext();
   const [newType, setNewType] = useState('');
   const [newValue, setNewValue] = useState('');
-
-  const allTagTypes = useMemo(() => {
-    const tagSet = new Set();
-    games.forEach((game) => {
-      game.categories.forEach((cat) => {
-        cat.objectives.forEach((obj) => {
-          obj.tags?.forEach((tag) => tagSet.add(tag.type));
-        });
-      });
-    });
-    return Array.from(tagSet);
-  }, [games]);
 
   const tagValuesForType = useMemo(() => {
     const tagSet = new Set();
@@ -61,7 +54,7 @@ const TagEditor = ({ objective = {}, onUpdateTags }) => {
   return (
     <Wrapper>
       <TagsList tags={objective.tags} />
-      <TagRow>
+      <TagForm>
         <Input
           list="tag-types"
           value={newType}
@@ -89,7 +82,7 @@ const TagEditor = ({ objective = {}, onUpdateTags }) => {
         <Button variant="tertiary" onClick={handleAddTag}>
           Add Tag
         </Button>
-      </TagRow>
+      </TagForm>
     </Wrapper>
   );
 };

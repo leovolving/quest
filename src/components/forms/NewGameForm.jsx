@@ -2,7 +2,9 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { FocusTrap } from 'focus-trap-react';
 
-import { Button } from '../_ds';
+import { STATUS_OPTIONS } from '../../constants';
+
+import { Button, Select, InputField } from '../_ds';
 
 import useGameDataService from '../../services/gameDataService';
 
@@ -48,46 +50,6 @@ const FormTitle = styled.h2`
   font-weight: 600;
 `;
 
-const InputField = styled.input`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.sm};
-  margin: ${({ theme }) => theme.spacing.xs} 0;
-  background-color: ${({ theme }) => theme.colors.inputBackground};
-  color: ${({ theme }) => theme.colors.inputText};
-  border: 1px solid ${({ theme }) => theme.colors.inputBorder};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary}20;
-  }
-`;
-
-const SelectField = styled.select`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.sm};
-  margin: ${({ theme }) => theme.spacing.xs} 0;
-  background-color: ${({ theme }) => theme.colors.inputBackground};
-  color: ${({ theme }) => theme.colors.inputText};
-  border: 1px solid ${({ theme }) => theme.colors.inputBorder};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: 1rem;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364758b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right ${({ theme }) => theme.spacing.sm} center;
-  background-size: 16px;
-  padding-right: ${({ theme }) => theme.spacing.xl};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary}20;
-  }
-`;
-
 const NewGameForm = ({ isOpen, onClose }) => {
   const { addNewGame } = useGameDataService();
   const [gameName, setGameName] = useState('');
@@ -123,19 +85,21 @@ const NewGameForm = ({ isOpen, onClose }) => {
       <Overlay onClick={onClose}>
         <DialogBox onClick={(e) => e.stopPropagation()}>
           <FormContainer onSubmit={handleSubmit}>
-            <FormTitle>Add New Game</FormTitle>
+            <FormTitle>Add new game</FormTitle>
             <InputField
+              label="Game title"
               type="text"
               value={gameName}
               onChange={(e) => setGameName(e.target.value)}
-              placeholder="Enter game name"
+              placeholder="Horizon Zero Dawn"
               autoFocus
             />
-            <SelectField value={gameStatus} onChange={(e) => setGameStatus(e.target.value)}>
-              <option value="currently-playing">Currently Playing</option>
-              <option value="not-played">Not Played</option>
-              <option value="beaten-game">Beaten</option>
-            </SelectField>
+            <Select
+              label="Status"
+              onChange={(e) => setGameStatus(e.target.value)}
+              options={STATUS_OPTIONS}
+              value={gameStatus}
+            />
             <Button type="submit" variant="secondary">
               Add Game
             </Button>

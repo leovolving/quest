@@ -1,14 +1,17 @@
-// src/components/GameDetail.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
 
+import { STATUS_OPTIONS } from '../constants';
+
 import CategoryList from './CategoryList';
 import TagView from './TagView';
 import NewObjectiveForm from './forms/NewObjectiveForm';
+
+import { Select } from './_ds';
 
 const BackLink = styled(Link)`
   display: flex;
@@ -48,20 +51,6 @@ const GameTitle = styled.h1`
   font-weight: 600;
 `;
 
-const StatusSelect = styled.select`
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme }) => theme.colors.cardBg};
-  color: ${({ theme }) => theme.colors.text};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
 const ViewControls = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
@@ -76,6 +65,10 @@ const ControlGroup = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const Flex1ControlGroup = styled(ControlGroup)`
+  flex: 1;
 `;
 
 const Label = styled.label`
@@ -98,7 +91,7 @@ const GameDetail = () => {
   if (!game) {
     return (
       <div>
-        <BackLink to="/">← Back to Games</BackLink>
+        <BackLink to="/">← Back</BackLink>
         <p>Game not found.</p>
       </div>
     );
@@ -131,35 +124,30 @@ const GameDetail = () => {
 
   return (
     <div>
-      <BackLink to="/">← Back to Games</BackLink>
+      <BackLink to="/">← Back</BackLink>
       <GameHeader>
         <GameTitle>{game.name}</GameTitle>
-        <StatusSelect value={game.status || 'not-played'} onChange={onUpdateStatus}>
-          <option value="not-played">Not Played</option>
-          <option value="currently-playing">Currently Playing</option>
-          <option value="beaten-game">Game Beaten</option>
-        </StatusSelect>
+        <Select
+          label="Game status"
+          onChange={onUpdateStatus}
+          options={STATUS_OPTIONS}
+          value={game.status || 'not-played'}
+        />
       </GameHeader>
 
       <ViewControls>
         <ControlGroup>
-          <Label>
-            Group by tag:
-            <StatusSelect
-              value={groupByTagType}
-              onChange={(e) => setGroupByTagType(e.target.value)}
-            >
-              <option value="">Category</option>
-              {tagTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </StatusSelect>
-          </Label>
+          <Select
+            value={groupByTagType}
+            onChange={(e) => setGroupByTagType(e.target.value)}
+            label="Grouped by:"
+            options={[{ value: '', label: 'Category' }].concat(
+              tagTypes.map((type) => ({ label: type, value: type }))
+            )}
+          />
         </ControlGroup>
 
-        <ControlGroup>
+        <Flex1ControlGroup>
           <Checkbox
             type="checkbox"
             checked={hideCompleted}
@@ -167,7 +155,7 @@ const GameDetail = () => {
             id="hide-completed"
           />
           <Label htmlFor="hide-completed">Hide completed</Label>
-        </ControlGroup>
+        </Flex1ControlGroup>
       </ViewControls>
 
       {groupByTagType ? (

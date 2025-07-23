@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import { createContext, useContext, useState, useMemo, useRef } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 
 const GameContext = createContext();
@@ -17,6 +17,21 @@ function useSelectedGameId() {
 export const GameProvider = ({ children }) => {
   const [games, setGames] = useState([]);
   const selectedGameId = useSelectedGameId();
+  const prevAllTagTypesRef = useRef([]);
+
+  const allTagTypes = useMemo(() => {
+    const tagSet = new Set(prevAllTagTypesRef.current);
+    games.forEach((game) => {
+      game.categories.forEach((cat) => {
+        cat.objectives.forEach((obj) => {
+          obj.tags?.forEach((tag) => tagSet.add(tag.type));
+        });
+      });
+    });
+    const tagArray = Array.from(tagSet);
+    prevAllTagTypesRef.current = tagArray;
+    return tagArray;
+  }, [games]);
 
   const selectedGame = useMemo(
     () => (selectedGameId ? games.find((g) => String(g.id) === String(selectedGameId)) : null),
@@ -24,7 +39,7 @@ export const GameProvider = ({ children }) => {
   );
 
   return (
-    <GameContext.Provider value={{ games, setGames, selectedGame, selectedGameId }}>
+    <GameContext.Provider value={{ allTagTypes, games, setGames, selectedGame, selectedGameId }}>
       {children}
     </GameContext.Provider>
   );

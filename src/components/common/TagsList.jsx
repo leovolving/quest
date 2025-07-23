@@ -1,11 +1,16 @@
+import styled from 'styled-components';
+
 import { TagRow } from '../sharedStyledComponents';
 
-const TagsList = ({ tags = [] }) =>
-  tags?.map((tag, idx) => (
-    <TagRow key={idx}>
-      <span>{tag.type}:</span>
-      <strong>{tag.value}</strong>
-    </TagRow>
-  ));
+const Container = styled.ul`
+  padding-left: 0;
+`;
 
+const TagsList = ({ tags = [] }) => (
+  <Container>
+    {tags?.map((tag, idx) => (
+      <TagRow key={idx} tag={tag}></TagRow>
+    ))}
+  </Container>
+);
 export default TagsList;
