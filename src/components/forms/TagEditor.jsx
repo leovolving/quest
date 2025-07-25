@@ -1,17 +1,13 @@
-// src/components/TagEditor.jsx
-import { useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
-import { Button } from '../../components/_ds';
-
 import { useGameContext } from '../../context/GameContext';
-import TagsList from '../common/TagsList';
 
 const Wrapper = styled.div`
   margin-top: 0.5rem;
 `;
 
-export const TagForm = styled.ul`
+export const TagForm = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -28,61 +24,63 @@ const Input = styled.input`
 
 const TagEditor = ({ objective = {}, onUpdateTags }) => {
   const { allTagTypes, selectedGame } = useGameContext();
-  const [newType, setNewType] = useState('');
-  const [newValue, setNewValue] = useState('');
 
-  const tagValuesForType = useMemo(() => {
-    const tagSet = new Set();
-    selectedGame?.categories.forEach((cat) => {
-      cat.objectives.forEach((obj) => {
-        obj.tags?.forEach((tag) => {
-          if (tag.type === newType) tagSet.add(tag.value);
+  const tagValuesForType = useCallback(
+    (typeToMap) => {
+      const tagSet = new Set();
+      selectedGame?.categories.forEach((cat) => {
+        cat.objectives.forEach((obj) => {
+          obj.tags?.forEach((tag) => {
+            if (tag.type === typeToMap) tagSet.add(tag.value);
+          });
         });
       });
-    });
-    return Array.from(tagSet);
-  }, [selectedGame, newType]);
+      return Array.from(tagSet);
+    },
+    [selectedGame]
+  );
 
-  const handleAddTag = () => {
-    if (!newType || !newValue) return;
-    const newTags = [...(objective.tags || []), { type: newType, value: newValue }];
+  const handleUpdateTags = (type, value, idx) => {
+    const newTags = [...(objective.tags || [])];
+    newTags[idx] = { type, value };
     onUpdateTags(newTags);
-    setNewType('');
-    setNewValue('');
   };
+
+  const tags = (objective.tags || []).concat({ type: '', value: '' });
 
   return (
     <Wrapper>
-      <TagsList tags={objective.tags} />
-      <TagForm>
-        <Input
-          list="tag-types"
-          value={newType}
-          onChange={(e) => setNewType(e.target.value)}
-          placeholder="Tag type"
-        />
-        <datalist id="tag-types">
-          {allTagTypes.map((type, idx) => (
-            <option key={idx} value={type} />
-          ))}
-        </datalist>
+      {tags.map((t, idx) => (
+        <TagForm key={`tag-form-${idx}`}>
+          <Input
+            list={`tag-types-${idx}`}
+            value={t.type}
+            onChange={(e) => handleUpdateTags(e.target.value, t.value, idx)}
+            placeholder="Tag type"
+            name={`tag-form-type-${idx}`}
+            id={`tag-form-type-${idx}`}
+          />
+          <datalist id={`tag-types-${idx}`}>
+            {allTagTypes.map((type, idx) => (
+              <option key={idx} value={type} />
+            ))}
+          </datalist>
 
-        <Input
-          list="tag-values"
-          value={newValue}
-          onChange={(e) => setNewValue(e.target.value)}
-          placeholder="Tag value"
-        />
-        <datalist id="tag-values">
-          {tagValuesForType.map((val, idx) => (
-            <option key={idx} value={val} />
-          ))}
-        </datalist>
-
-        <Button variant="tertiary" onClick={handleAddTag}>
-          Add Tag
-        </Button>
-      </TagForm>
+          <Input
+            list={`tag-values-${idx}`}
+            value={t.value}
+            onChange={(e) => handleUpdateTags(t.type, e.target.value, idx)}
+            placeholder="Tag value"
+            name={`tag-form-value-${idx}`}
+            id={`tag-form-value-${idx}`}
+          />
+          <datalist id={`tag-values-${idx}`}>
+            {tagValuesForType(t.type).map((val, idx) => (
+              <option key={idx} value={val} />
+            ))}
+          </datalist>
+        </TagForm>
+      ))}
     </Wrapper>
   );
 };

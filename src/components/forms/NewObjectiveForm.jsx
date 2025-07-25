@@ -114,7 +114,7 @@ const NewObjectiveForm = () => {
 
   return (
     <FormContainer onSubmit={handleAddObjective}>
-      <h3>Add New Objective</h3>
+      <h3>Add new objective</h3>
       <label>
         Category:
         <input
