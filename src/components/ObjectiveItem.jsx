@@ -10,7 +10,7 @@ import useGameDataService from '../services/gameDataService';
 import TagEditor from './forms/TagEditor';
 import TagsList from './common/TagsList';
 
-import { Button } from './_ds';
+import { Button, ProgressBar } from './_ds';
 
 const Wrapper = styled.div`
   display: flex;
@@ -79,7 +79,7 @@ const ButtonGroup = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-const ProgressText = styled.span`
+const ProgressText = styled.p`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text};
 `;
@@ -88,16 +88,7 @@ const ProgressControls = styled.div`
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
-
-  button {
-    background: #666;
-    color: white;
-    border: none;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-  }
+  align-items: center;
 `;
 
 const ObjectiveItem = ({ objective }) => {
@@ -206,8 +197,13 @@ const ObjectiveItem = ({ objective }) => {
                   Progress: {objective.progress.current} / {objective.progress.total}
                 </ProgressText>
                 <ProgressControls>
-                  <button onClick={() => handleProgressChange(-1)}>-</button>
-                  <button onClick={() => handleProgressChange(1)}>+</button>
+                  <Button variant="secondary" onClick={() => handleProgressChange(-1)}>
+                    -
+                  </Button>
+                  <ProgressBar value={objective.progress.current} max={objective.progress.total} />
+                  <Button variant="secondary" onClick={() => handleProgressChange(1)}>
+                    +
+                  </Button>
                 </ProgressControls>
               </>
             )}

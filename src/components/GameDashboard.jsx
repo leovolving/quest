@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { Button } from '../components/_ds';
+import { Button, ProgressBar } from '../components/_ds';
 
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
@@ -94,23 +94,6 @@ const GameCardButton = styled(Link)`
     font-size: 0.875rem;
   }
 
-  progress {
-    width: 100%;
-    height: 6px;
-    border-radius: ${({ theme }) => theme.borderRadius.sm};
-    background-color: ${({ theme }) => theme.colors.border};
-
-    &::-webkit-progress-bar {
-      background-color: ${({ theme }) => theme.colors.border};
-      border-radius: ${({ theme }) => theme.borderRadius.sm};
-    }
-
-    &::-webkit-progress-value {
-      background-color: ${({ theme }) => theme.colors.primary};
-      border-radius: ${({ theme }) => theme.borderRadius.sm};
-    }
-  }
-
   &:hover {
     background-color: ${({ theme }) => theme.colors.cardHover};
     border-color: ${({ theme }) => theme.colors.primary};
@@ -158,7 +141,7 @@ const GameDashboard = () => {
             <GameCardButton key={game.id} to={`/game/${game.id}`}>
               <h3>{game.name}</h3>
               <p>{game.categories.length} categories</p>
-              <progress value={game.progress.completed} max={game.progress.total} />
+              <ProgressBar value={game.progress.completed} max={game.progress.total} />
             </GameCardButton>
           ))}
         </GameCard>
