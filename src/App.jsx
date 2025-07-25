@@ -4,6 +4,8 @@ import { Route, Routes, Link } from 'react-router-dom';
 
 import useGameDataService from './services/gameDataService';
 
+import _404 from './pages/_404';
+
 import GameDashboard from './components/GameDashboard';
 import GameDetail from './components/GameDetail';
 
@@ -42,6 +44,7 @@ function App() {
       <Routes>
         <Route path="/game/:gameId" element={<GameDetail />} />
         <Route path="/" element={<GameDashboard />} />
+        <Route path="*" element={<_404 />} />
       </Routes>
     </AppContainer>
   );
