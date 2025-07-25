@@ -1,5 +1,3 @@
-// src/components/GameDashboard.jsx
-import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +5,7 @@ import { Button } from '../components/_ds';
 
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
+import { STATUS_OPTIONS } from '../constants';
 
 import NewGameForm from './forms/NewGameForm';
 
@@ -137,6 +136,12 @@ const GameDashboard = () => {
     return acc;
   }, {});
 
+  const orderedGroupedGames = STATUS_OPTIONS.reduce((acc, curr) => {
+    const status = curr.value;
+    if (groupedGames[status]) acc[status] = groupedGames[status];
+    return acc;
+  }, {});
+
   return (
     <Dashboard>
       <Header>
@@ -146,7 +151,7 @@ const GameDashboard = () => {
         </Button>
       </Header>
       <NewGameForm isOpen={isNewGameFormOpen} onClose={toggleIsNewGameFormOpen} />
-      {Object.entries(groupedGames).map(([status, games]) => (
+      {Object.entries(orderedGroupedGames).map(([status, games]) => (
         <GameCard key={status}>
           <StatusTitle>{status.replace(/-/g, ' ')}</StatusTitle>
           {games.map((game) => (
