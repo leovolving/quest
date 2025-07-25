@@ -1,14 +1,14 @@
 import { useGameContext } from '../context/GameContext';
 
 const DEFAULT_TAG_TYPE_CATEGORY_COLORS = [
-  '#6366F1', // Indigo
-  '#84CC16', // Lime
-  '#D946EF', // Fuchsia
-  '#06B6D4', // Cyan
-  '#14B8A6', // Teal
-  '#F43F5E', // Rose
-  '#8B5CF6', // Purple
-  '#A855F7', // Plum
+  { bg: '#8B4513', text: '#FFFFFF' },
+  { bg: '#9fd824', text: '#1A1A1A' },
+  { bg: '#3f388f', text: '#FFFFFF' },
+  { bg: '#f2be85', text: '#1A1A1A' },
+  { bg: '#1dbce6', text: '#1A1A1A' },
+  { bg: '#aed0d4', text: '#1A1A1A' },
+  { bg: '#1a33da', text: '#FFFFFF' },
+  { bg: '#b5e1b6', text: '#1A1A1A' },
 ];
 
 const useTagColorService = () => {

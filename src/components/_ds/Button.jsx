@@ -40,6 +40,7 @@ export const Button = styled.button`
       border: ${v.border || 'none'};
       &:hover {
         background: ${!disabled && v.hover};
+        border-color: initial;
       }
       &:active {
         background: ${!disabled && v.active};

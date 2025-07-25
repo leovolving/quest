@@ -26,6 +26,10 @@ const AppContainer = styled.div`
 
 const GlobalNav = styled.nav``;
 
+const Logo = styled.img`
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+`;
+
 function App() {
   const { initialize } = useGameDataService();
 
@@ -38,7 +42,7 @@ function App() {
     <AppContainer>
       <GlobalNav>
         <Link to="/">
-          <img src="/trackquest_banner_v2.png" width="300" />
+          <Logo src="/trackquest_banner_v2.png" width="300" />
         </Link>
       </GlobalNav>
       <Routes>

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
@@ -11,28 +10,14 @@ import CategoryList from './CategoryList';
 import TagView from './TagView';
 import NewObjectiveForm from './forms/NewObjectiveForm';
 
-import { Select } from './_ds';
+import { RouterLink, Select } from './_ds';
 
-const BackLink = styled(Link)`
+const BackLink = styled(RouterLink)`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme }) => theme.colors.cardBg};
-  color: ${({ theme }) => theme.colors.text};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.cardHover};
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
+  width: fit-content;
 `;
 
 const GameHeader = styled.div`
@@ -91,7 +76,9 @@ const GameDetail = () => {
   if (!game) {
     return (
       <div>
-        <BackLink to="/">← Back</BackLink>
+        <BackLink to="/" variant="tertiary">
+          ← Back
+        </BackLink>
         <p>Game not found.</p>
       </div>
     );
@@ -128,7 +115,9 @@ const GameDetail = () => {
 
   return (
     <div>
-      <BackLink to="/">← Back</BackLink>
+      <BackLink to="/" variant="tertiary">
+        ← Back
+      </BackLink>
       <GameHeader>
         <GameTitle>{game.name}</GameTitle>
         <Select
