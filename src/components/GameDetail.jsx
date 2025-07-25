@@ -122,6 +122,10 @@ const GameDetail = () => {
     updateGame(updatedGame);
   };
 
+  const isUsingTags = tagTypes.length > 0;
+  const hasObjectives = game.categories.some((c) => c.objectives?.length > 0);
+  const shouldShowGameControls = isUsingTags || hasObjectives;
+
   return (
     <div>
       <BackLink to="/">← Back</BackLink>
@@ -135,28 +139,34 @@ const GameDetail = () => {
         />
       </GameHeader>
 
-      <ViewControls>
-        <ControlGroup>
-          <Select
-            value={groupByTagType}
-            onChange={(e) => setGroupByTagType(e.target.value)}
-            label="Grouped by:"
-            options={[{ value: '', label: 'Category' }].concat(
-              tagTypes.map((type) => ({ label: type, value: type }))
-            )}
-          />
-        </ControlGroup>
+      {shouldShowGameControls && (
+        <ViewControls>
+          {isUsingTags && (
+            <ControlGroup>
+              <Select
+                value={groupByTagType}
+                onChange={(e) => setGroupByTagType(e.target.value)}
+                label="Grouped by:"
+                options={[{ value: '', label: 'Category' }].concat(
+                  tagTypes.map((type) => ({ label: type, value: type }))
+                )}
+              />
+            </ControlGroup>
+          )}
 
-        <Flex1ControlGroup>
-          <Checkbox
-            type="checkbox"
-            checked={hideCompleted}
-            onChange={() => setHideCompleted((prev) => !prev)}
-            id="hide-completed"
-          />
-          <Label htmlFor="hide-completed">Hide completed</Label>
-        </Flex1ControlGroup>
-      </ViewControls>
+          {hasObjectives && (
+            <Flex1ControlGroup>
+              <Checkbox
+                type="checkbox"
+                checked={hideCompleted}
+                onChange={() => setHideCompleted((prev) => !prev)}
+                id="hide-completed"
+              />
+              <Label htmlFor="hide-completed">Hide completed</Label>
+            </Flex1ControlGroup>
+          )}
+        </ViewControls>
+      )}
 
       {groupByTagType ? (
         <TagView
