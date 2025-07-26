@@ -61,6 +61,12 @@ const Form = styled.form`
   width: 100%;
 `;
 
+const InputContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
 const Input = styled.input`
   padding: ${({ theme }) => theme.spacing.sm};
   background-color: ${({ theme }) => theme.colors.inputBackground};
@@ -100,6 +106,8 @@ const ObjectiveItem = ({ objective }) => {
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
   const [title, setTitle] = useState(objective.title);
   const [notes, setNotes] = useState(objective.notes || '');
+  const [progressCurrent, setProgressCurrent] = useState(objective.progress?.current || '');
+  const [progressTotal, setProgressTotal] = useState(objective.progress?.total || '');
 
   const handleChange = () => {
     toggleObjective(objective);
@@ -107,7 +115,16 @@ const ObjectiveItem = ({ objective }) => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    updateObjective({ ...objective, title, notes });
+
+    const newObjective = { ...objective, title, notes };
+    if (progressTotal) {
+      newObjective.progress = {
+        current: parseInt(progressCurrent || '0', 10),
+        total: parseInt(progressTotal, 10),
+      };
+    }
+
+    updateObjective(newObjective);
     toggleIsEditing();
   };
 
@@ -181,6 +198,26 @@ const ObjectiveItem = ({ objective }) => {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
+            <label>
+              Progress:
+              <InputContainer>
+                <input
+                  type="number"
+                  min="0"
+                  value={progressCurrent}
+                  onChange={(e) => setProgressCurrent(e.target.value)}
+                  placeholder="Current"
+                />
+                <span>/</span>
+                <input
+                  type="number"
+                  min="1"
+                  value={progressTotal}
+                  onChange={(e) => setProgressTotal(e.target.value)}
+                  placeholder="Total"
+                />
+              </InputContainer>
+            </label>
             <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
             <ButtonGroup>
               <Button type="submit" variant="primary">
