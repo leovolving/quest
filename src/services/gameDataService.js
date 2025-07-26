@@ -1,4 +1,5 @@
-// src/services/dataService.js
+import cloneDeep from 'lodash/cloneDeep';
+
 import sampleData from '../data/sampleData';
 
 import { useGameContext } from '../context/GameContext';
@@ -6,7 +7,7 @@ import { useGameContext } from '../context/GameContext';
 const STORAGE_KEY = 'launch_quest_data';
 
 const useGameDataService = () => {
-  const { games, setGames } = useGameContext();
+  const { selectedGame, games, setGames } = useGameContext();
 
   const getGames = (initialData = []) => {
     try {
@@ -36,6 +37,14 @@ const useGameDataService = () => {
     }
   };
 
+  const getObjectiveAndCategoryIndex = (objectiveId) => {
+    for (let i = 0; i < selectedGame.categories.length; i++) {
+      const category = selectedGame.categories[i];
+      const objective = category.objectives?.find((o) => o.id === objectiveId);
+      if (objective) return { objective, categoryIndex: i };
+    }
+  };
+
   const updateGame = (updatedGame, options = {}) => {
     const { onSuccess } = options;
     const updated = games.map((g) => (g.id === updatedGame.id ? updatedGame : g));
@@ -45,13 +54,24 @@ const useGameDataService = () => {
     }
   };
 
+  const duplicateObjective = (objectiveId) => {
+    const timestamp = Date.now();
+    const { objective: objectiveToDuplicate, categoryIndex } =
+      getObjectiveAndCategoryIndex(objectiveId);
+    const newId = objectiveId + '-duplicate-' + timestamp;
+    const newObjective = cloneDeep(objectiveToDuplicate);
+
+    selectedGame.categories[categoryIndex].objectives.push({ ...newObjective, id: newId });
+    updateGame(selectedGame);
+  };
+
   const initialize = () => {
     const allCurrentGames = getGames(sampleData);
 
     setGames(allCurrentGames);
   };
 
-  return { addNewGame, initialize, updateGame };
+  return { addNewGame, initialize, duplicateObjective, updateGame };
 };
 
 export default useGameDataService;

@@ -48,9 +48,10 @@ const Note = styled.em`
   margin-left: ${({ theme }) => theme.spacing.xs};
 `;
 
-const EditButton = styled(Button)`
-  display: block;
-  margin-top: ${({ theme }) => theme.spacing.md} 0;
+const ActionsContainer = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
 const Form = styled.form`
@@ -94,7 +95,7 @@ const ProgressControls = styled.div`
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
   const { selectedGame } = useGameContext();
-  const { updateGame } = useGameDataService();
+  const { duplicateObjective, updateGame } = useGameDataService();
 
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
   const [title, setTitle] = useState(objective.title);
@@ -108,6 +109,12 @@ const ObjectiveItem = ({ objective }) => {
     e.preventDefault();
     updateObjective({ ...objective, title, notes });
     toggleIsEditing();
+  };
+
+  // TODO: use game data service for these game-updating functions
+
+  const handleDuplicate = () => {
+    duplicateObjective(objective.id);
   };
 
   const handleProgressChange = (delta) => {
@@ -209,9 +216,14 @@ const ObjectiveItem = ({ objective }) => {
             )}
             <TagsList tags={objective.tags} />
             {objective.notes && <Note>{objective.notes}</Note>}
-            <EditButton onClick={toggleIsEditing} variant="tertiary">
-              Edit objective
-            </EditButton>
+            <ActionsContainer>
+              <Button onClick={handleDuplicate} variant="secondary">
+                + Duplicate
+              </Button>
+              <Button onClick={toggleIsEditing} variant="tertiary">
+                Edit objective
+              </Button>
+            </ActionsContainer>
           </>
         )}
       </Content>
