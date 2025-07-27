@@ -72,17 +72,22 @@ const useGameDataService = () => {
 
   const duplicateObjective = (objectiveId) => {
     const timestamp = Date.now();
-    const { objective: objectiveToDuplicate, categoryIndex } =
-      getObjectiveAndCategoryIndex(objectiveId);
-    const newId = objectiveId + '-duplicate-' + timestamp;
-    const newObjective = cloneDeep(objectiveToDuplicate);
+    const game = cloneDeep(selectedGame);
 
-    selectedGame.categories[categoryIndex].objectives.push({
-      ...newObjective,
-      title: `Copy of ${newObjective.title}`,
+    const {
+      objective: objectiveToDuplicate,
+      objectiveIndex,
+      categoryIndex,
+    } = getObjectiveAndCategoryIndex(objectiveId);
+    const newId = objectiveId + '-duplicate-' + timestamp;
+    const newObjective = {
+      ...cloneDeep(objectiveToDuplicate),
+      title: `Copy of ${objectiveToDuplicate.title}`,
       id: newId,
-    });
-    updateGame(selectedGame);
+    };
+
+    game.categories[categoryIndex].objectives.splice(objectiveIndex + 1, 0, newObjective);
+    updateGame(game);
   };
 
   const initialize = () => {
