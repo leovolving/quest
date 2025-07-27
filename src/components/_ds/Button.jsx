@@ -48,6 +48,7 @@ export const Button = styled.button`
       &:hover {
         background: ${!disabled && v.hover};
         border-color: initial;
+        color: ${disabled ? v.disabledText : v.text};
       }
       &:active {
         background: ${!disabled && v.active};
