@@ -4,6 +4,8 @@ import { Route, Routes, Link } from 'react-router-dom';
 
 import useGameDataService from './services/gameDataService';
 
+import useScrollToTopOnNewRoute from './hooks/useScrollToTopOnNewRoute';
+
 import _404 from './pages/_404';
 
 import GameDashboard from './components/GameDashboard';
@@ -32,6 +34,7 @@ const Logo = styled.img`
 
 function App() {
   const { initialize } = useGameDataService();
+  useScrollToTopOnNewRoute();
 
   useEffect(() => {
     initialize();
