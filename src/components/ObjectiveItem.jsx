@@ -10,7 +10,7 @@ import useGameDataService from '../services/gameDataService';
 import TagEditor from './forms/TagEditor';
 import TagsList from './common/TagsList';
 
-import { Button, ProgressBar } from './_ds';
+import { Button, BUTTON_VARIANT, ProgressBar } from './_ds';
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,6 +53,7 @@ const Note = styled.em`
 const ActionsContainer = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
@@ -103,7 +104,7 @@ const ProgressControls = styled.div`
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
   const { selectedGame } = useGameContext();
-  const { duplicateObjective, updateGame } = useGameDataService();
+  const { deleteObjective, duplicateObjective, updateGame } = useGameDataService();
 
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
   const [title, setTitle] = useState(objective.title);
@@ -131,6 +132,10 @@ const ObjectiveItem = ({ objective }) => {
   };
 
   // TODO: use game data service for these game-updating functions
+
+  const handleDelete = () => {
+    deleteObjective(objective.id);
+  };
 
   const handleDuplicate = () => {
     duplicateObjective(objective.id);
@@ -256,11 +261,14 @@ const ObjectiveItem = ({ objective }) => {
             )}
             <TagsList tags={objective.tags} />
             <ActionsContainer>
-              <Button onClick={handleDuplicate} variant="secondary">
+              <Button onClick={toggleIsEditing} variant={BUTTON_VARIANT.TERTIARY}>
+                Edit objective
+              </Button>
+              <Button onClick={handleDuplicate} variant={BUTTON_VARIANT.SECONDARY}>
                 + Duplicate
               </Button>
-              <Button onClick={toggleIsEditing} variant="tertiary">
-                Edit objective
+              <Button onClick={handleDelete} variant={BUTTON_VARIANT.DANGER}>
+                Delete
               </Button>
             </ActionsContainer>
           </>

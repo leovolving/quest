@@ -40,8 +40,10 @@ const useGameDataService = () => {
   const getObjectiveAndCategoryIndex = (objectiveId) => {
     for (let i = 0; i < selectedGame.categories.length; i++) {
       const category = selectedGame.categories[i];
-      const objective = category.objectives?.find((o) => o.id === objectiveId);
-      if (objective) return { objective, categoryIndex: i };
+      const objectiveIndex = category.objectives?.findIndex((o) => o.id === objectiveId);
+      if (objectiveIndex >= 0) {
+        return { objective: category.objectives[objectiveIndex], objectiveIndex, categoryIndex: i };
+      }
     }
   };
 
@@ -51,6 +53,20 @@ const useGameDataService = () => {
     saveGames(updated);
     if (typeof onSuccess === 'function') {
       onSuccess();
+    }
+  };
+
+  const deleteObjective = (objectiveId) => {
+    const game = cloneDeep(selectedGame);
+    const { objective, objectiveIndex, categoryIndex } = getObjectiveAndCategoryIndex(objectiveId);
+    const confirmationMessage = `Are you sure you want to delete ${objective.title}? This action cannot be undone`;
+
+    if (confirm(confirmationMessage)) {
+      const newObjectives = cloneDeep(game.categories[categoryIndex].objectives);
+      newObjectives.splice(objectiveIndex, 1);
+
+      game.categories[categoryIndex].objectives = newObjectives;
+      updateGame(game);
     }
   };
 
@@ -75,7 +91,7 @@ const useGameDataService = () => {
     setGames(allCurrentGames);
   };
 
-  return { addNewGame, initialize, duplicateObjective, updateGame };
+  return { initialize, addNewGame, deleteObjective, duplicateObjective, updateGame };
 };
 
 export default useGameDataService;
