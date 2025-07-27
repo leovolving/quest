@@ -5,9 +5,12 @@ import sampleData from '../data/sampleData';
 
 import { useGameContext } from '../context/GameContext';
 
+import useRouterHelpers from '../hooks/useRouterHelpers';
+
 const STORAGE_KEY = 'launch_quest_data';
 
 const useGameDataService = () => {
+  const { navigateToGame } = useRouterHelpers();
   const { gameId } = useParams();
   const { games, setGames } = useGameContext();
   const selectedGame = games.find((g) => String(g.id) === String(gameId));
@@ -77,6 +80,7 @@ const useGameDataService = () => {
 
       game.categories[categoryIndex].objectives = newObjectives;
       updateGame(game);
+      navigateToGame();
     }
   };
 
@@ -98,6 +102,7 @@ const useGameDataService = () => {
 
     game.categories[categoryIndex].objectives.splice(objectiveIndex + 1, 0, newObjective);
     updateGame(game);
+    navigateToGame();
   };
 
   const initialize = () => {

@@ -1,7 +1,8 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const useRouterHelpers = () => {
   const { gameId } = useParams();
+  const navigate = useNavigate();
 
   const generateActiveGameLink = () => `/game/${gameId}`;
 
@@ -9,7 +10,11 @@ const useRouterHelpers = () => {
     return `${generateActiveGameLink()}/objective/${objectiveId}`;
   };
 
-  return { generateActiveGameLink, generateObjectiveDetailsLink };
+  const navigateToGame = () => {
+    navigate(generateActiveGameLink());
+  };
+
+  return { navigateToGame, generateActiveGameLink, generateObjectiveDetailsLink };
 };
 
 export default useRouterHelpers;
