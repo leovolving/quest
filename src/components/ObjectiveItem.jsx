@@ -46,6 +46,8 @@ const Note = styled.em`
   color: ${({ theme }) => theme.colors.textSecondary};
   font-size: 0.875rem;
   margin-left: ${({ theme }) => theme.spacing.xs};
+  margin-top: ${({ theme }) => theme.spacing.sm};
+  display: block;
 `;
 
 const ActionsContainer = styled.div`
@@ -234,6 +236,7 @@ const ObjectiveItem = ({ objective }) => {
               <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
               <Title>{objective.title}</Title>
             </label>
+            {objective.notes && <Note>{objective.notes}</Note>}
 
             {objective.progress && (
               <>
@@ -252,7 +255,6 @@ const ObjectiveItem = ({ objective }) => {
               </>
             )}
             <TagsList tags={objective.tags} />
-            {objective.notes && <Note>{objective.notes}</Note>}
             <ActionsContainer>
               <Button onClick={handleDuplicate} variant="secondary">
                 + Duplicate
