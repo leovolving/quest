@@ -17,13 +17,21 @@ const Wrapper = styled.div`
   transition: background-color 0.2s ease-in-out;
 
   &:not(:last-of-type) {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+    border-bottom: 2px solid ${({ theme }) => theme.colors.border};
   }
 
   @media (max-width: 600px) {
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.xs};
   }
+`;
+
+const TitleContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Checkbox = styled.input`
@@ -104,10 +112,15 @@ const ObjectiveItem = ({ objective }) => {
 
   return (
     <Wrapper>
-      <label>
-        <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
-        <Title>{objective.title}</Title>
-      </label>
+      <TitleContainer>
+        <label>
+          <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
+          <Title>{objective.title}</Title>
+        </label>
+        <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
+          Expand
+        </Button>
+      </TitleContainer>
       {objective.notes && <Note>{objective.notes}</Note>}
 
       {objective.progress && (
@@ -126,11 +139,6 @@ const ObjectiveItem = ({ objective }) => {
           </ProgressControls>
         </>
       )}
-      <ActionsContainer>
-        <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
-          Expand
-        </Button>
-      </ActionsContainer>
     </Wrapper>
   );
 };
