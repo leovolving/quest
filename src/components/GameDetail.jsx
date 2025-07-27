@@ -137,7 +137,7 @@ const GameDetail = () => {
                 onChange={(e) => setGroupByTagType(e.target.value)}
                 label="Grouped by:"
                 options={[{ value: '', label: 'Category' }].concat(
-                  tagTypes.map((type) => ({ label: type, value: type }))
+                  tagTypes.map((type) => ({ label: `Tag: ${type}`, value: type }))
                 )}
               />
             </ControlGroup>
