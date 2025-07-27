@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import useGameDataService from '../services/gameDataService';
@@ -77,7 +77,6 @@ const ObjectiveDetail = () => {
   const objective = getObjective(objectiveId);
 
   const toggleObjective = useToggleObjective();
-  const { generateObjectiveDetailsLink } = useRouterHelpers();
 
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
 
@@ -165,9 +164,6 @@ const ObjectiveDetail = () => {
             )}
             <TagsList tags={objective.tags} />
             <ActionsContainer>
-              <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
-                Expand
-              </Button>
               <Button onClick={toggleIsEditing} variant={BUTTON_VARIANT.TERTIARY}>
                 Edit objective
               </Button>
