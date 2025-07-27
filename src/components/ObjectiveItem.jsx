@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 import useToggleObjective from '../hooks/useToggleObjective';
+import useRouterHelpers from '../hooks/useRouterHelpers';
 
 import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
@@ -11,6 +12,7 @@ import TagEditor from './forms/TagEditor';
 import TagsList from './common/TagsList';
 
 import { Button, BUTTON_VARIANT, ProgressBar } from './_ds';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
@@ -105,6 +107,7 @@ const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
   const { selectedGame } = useGameContext();
   const { deleteObjective, duplicateObjective, updateGame } = useGameDataService();
+  const { generateObjectiveDetailsLink } = useRouterHelpers();
 
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
   const [title, setTitle] = useState(objective.title);
@@ -261,6 +264,9 @@ const ObjectiveItem = ({ objective }) => {
             )}
             <TagsList tags={objective.tags} />
             <ActionsContainer>
+              <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
+                Expand
+              </Button>
               <Button onClick={toggleIsEditing} variant={BUTTON_VARIANT.TERTIARY}>
                 Edit objective
               </Button>

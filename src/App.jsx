@@ -10,6 +10,7 @@ import _404 from './pages/_404';
 
 import GameDashboard from './components/GameDashboard';
 import GameDetail from './components/GameDetail';
+import ObjectiveDetail from './pages/ObjectiveDetail';
 
 const AppContainer = styled.div`
   max-width: 1200px;
@@ -49,6 +50,7 @@ function App() {
         </Link>
       </GlobalNav>
       <Routes>
+        <Route path="/game/:gameId/objective/:objectiveId" element={<ObjectiveDetail />} />
         <Route path="/game/:gameId" element={<GameDetail />} />
         <Route path="/" element={<GameDashboard />} />
         <Route path="*" element={<_404 />} />
