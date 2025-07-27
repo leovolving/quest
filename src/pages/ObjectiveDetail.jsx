@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -11,7 +10,7 @@ import { Button, BUTTON_VARIANT, ProgressBar } from '../components/_ds';
 
 import { BackLink } from '../components/common/BackLink';
 import TagsList from '../components/common/TagsList';
-import TagEditor from '../components/forms/TagEditor';
+import { EditObjectiveForm } from '../components/forms/EditObjectiveForm';
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,38 +57,6 @@ const ActionsContainer = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.sm};
-  width: 100%;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-`;
-
-const Input = styled.input`
-  padding: ${({ theme }) => theme.spacing.sm};
-  background-color: ${({ theme }) => theme.colors.inputBackground};
-  color: ${({ theme }) => theme.colors.text};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
-
 const ProgressText = styled.p`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text};
@@ -104,20 +71,15 @@ const ProgressControls = styled.div`
 
 const ObjectiveDetail = () => {
   const { generateActiveGameLink } = useRouterHelpers();
-  const { getObjective, selectedGame } = useGameDataService();
+  const { getObjective, selectedGame, deleteObjective, duplicateObjective, updateGame } =
+    useGameDataService();
   const { objectiveId } = useParams();
   const objective = getObjective(objectiveId);
 
   const toggleObjective = useToggleObjective();
-  const { deleteObjective, duplicateObjective, updateGame } = useGameDataService();
   const { generateObjectiveDetailsLink } = useRouterHelpers();
 
   const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
-  //   TODO: move form to separate component
-  const [title, setTitle] = useState(objective?.title || '');
-  const [notes, setNotes] = useState(objective?.notes || '');
-  const [progressCurrent, setProgressCurrent] = useState(objective?.progress?.current || '');
-  const [progressTotal, setProgressTotal] = useState(objective?.progress?.total || '');
 
   if (!objective) {
     return (
@@ -132,21 +94,6 @@ const ObjectiveDetail = () => {
 
   const handleChange = () => {
     toggleObjective(objective);
-  };
-
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-
-    const newObjective = { ...objective, title, notes };
-    if (progressTotal) {
-      newObjective.progress = {
-        current: parseInt(progressCurrent || '0', 10),
-        total: parseInt(progressTotal, 10),
-      };
-    }
-
-    updateObjective(newObjective);
-    toggleIsEditing();
   };
 
   // TODO: use game data service for these game-updating functions
@@ -186,74 +133,12 @@ const ObjectiveDetail = () => {
     updateGame(updatedGame);
   };
 
-  const updateObjective = (updatedObj) => {
-    const updatedGame = {
-      ...selectedGame,
-      categories: selectedGame.categories.map((cat) =>
-        cat.id !== updatedObj.categoryId
-          ? cat
-          : {
-              ...cat,
-              objectives: cat.objectives.map((obj) =>
-                obj.id === updatedObj.id ? updatedObj : obj
-              ),
-            }
-      ),
-    };
-    updateGame(updatedGame);
-  };
-
-  const handleTagUpdate = (newTags) => {
-    updateObjective({ ...objective, tags: newTags });
-  };
-
   return (
     <Wrapper>
       <BackLink to={generateActiveGameLink()} />
       <Content>
         {isEditing ? (
-          <Form onSubmit={handleEditSubmit}>
-            <label>
-              <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
-              Complete?
-            </label>
-            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            <Input
-              type="text"
-              placeholder="Notes (optional)"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-            <label>
-              Progress:
-              <InputContainer>
-                <input
-                  type="number"
-                  min="0"
-                  value={progressCurrent}
-                  onChange={(e) => setProgressCurrent(e.target.value)}
-                  placeholder="Current"
-                />
-                <span>/</span>
-                <input
-                  type="number"
-                  min="1"
-                  value={progressTotal}
-                  onChange={(e) => setProgressTotal(e.target.value)}
-                  placeholder="Total"
-                />
-              </InputContainer>
-            </label>
-            <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
-            <ButtonGroup>
-              <Button type="submit" variant="primary">
-                Save
-              </Button>
-              <Button type="button" onClick={toggleIsEditing} variant="secondary">
-                Cancel
-              </Button>
-            </ButtonGroup>
-          </Form>
+          <EditObjectiveForm objective={objective} onClose={toggleIsEditing} />
         ) : (
           <>
             <label>

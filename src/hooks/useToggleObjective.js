@@ -5,8 +5,8 @@ import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
 
 const useToggleObjective = () => {
-  const { games, selectedGame } = useGameContext();
-  const { updateGame } = useGameDataService();
+  const { games } = useGameContext();
+  const { selectedGame, updateGame } = useGameDataService();
 
   return useCallback(
     (objective) => {
