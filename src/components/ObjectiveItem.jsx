@@ -30,10 +30,6 @@ const Checkbox = styled.input`
   margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
-const Content = styled.div`
-  flex: 1;
-`;
-
 const Title = styled.span`
   color: ${({ theme }) => theme.colors.text};
   font-weight: 500;
@@ -64,6 +60,7 @@ const ProgressControls = styled.div`
   gap: 0.5rem;
   margin-top: 0.5rem;
   align-items: center;
+  width: 100%;
 `;
 
 const ObjectiveItem = ({ objective }) => {
@@ -107,35 +104,33 @@ const ObjectiveItem = ({ objective }) => {
 
   return (
     <Wrapper>
-      <Content>
-        <label>
-          <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
-          <Title>{objective.title}</Title>
-        </label>
-        {objective.notes && <Note>{objective.notes}</Note>}
+      <label>
+        <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
+        <Title>{objective.title}</Title>
+      </label>
+      {objective.notes && <Note>{objective.notes}</Note>}
 
-        {objective.progress && (
-          <>
-            <ProgressText>
-              Progress: {objective.progress.current} / {objective.progress.total}
-            </ProgressText>
-            <ProgressControls>
-              <Button variant="secondary" onClick={() => handleProgressChange(-1)}>
-                -
-              </Button>
-              <ProgressBar value={objective.progress.current} max={objective.progress.total} />
-              <Button variant="secondary" onClick={() => handleProgressChange(1)}>
-                +
-              </Button>
-            </ProgressControls>
-          </>
-        )}
-        <ActionsContainer>
-          <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
-            Expand
-          </Button>
-        </ActionsContainer>
-      </Content>
+      {objective.progress && (
+        <>
+          <ProgressText>
+            Progress: {objective.progress.current} / {objective.progress.total}
+          </ProgressText>
+          <ProgressControls>
+            <Button variant="secondary" onClick={() => handleProgressChange(-1)}>
+              -
+            </Button>
+            <ProgressBar value={objective.progress.current} max={objective.progress.total} />
+            <Button variant="secondary" onClick={() => handleProgressChange(1)}>
+              +
+            </Button>
+          </ProgressControls>
+        </>
+      )}
+      <ActionsContainer>
+        <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
+          Expand
+        </Button>
+      </ActionsContainer>
     </Wrapper>
   );
 };
