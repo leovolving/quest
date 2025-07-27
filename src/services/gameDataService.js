@@ -61,7 +61,11 @@ const useGameDataService = () => {
     const newId = objectiveId + '-duplicate-' + timestamp;
     const newObjective = cloneDeep(objectiveToDuplicate);
 
-    selectedGame.categories[categoryIndex].objectives.push({ ...newObjective, id: newId });
+    selectedGame.categories[categoryIndex].objectives.push({
+      ...newObjective,
+      title: `Copy of ${newObjective.title}`,
+      id: newId,
+    });
     updateGame(selectedGame);
   };
 
