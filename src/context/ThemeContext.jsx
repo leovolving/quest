@@ -24,6 +24,8 @@ const lightTheme = {
     inputBorder: '#C9D1D9',
     inputText: '#1A1A1A',
     inputPlaceholder: '#6A737D',
+    error: '#D93025',
+    errorHover: '#E6453A',
   },
   spacing: {
     xs: '0.25rem',
@@ -67,6 +69,13 @@ const lightTheme = {
       hoverBg: '#F3F3F3',
       activeBg: '#E6E6E6',
     },
+    danger: {
+      text: ({ theme }) => theme.colors.error,
+      bg: ({ theme }) => theme.colors.background,
+      border: ({ theme }) => `2px solid ${theme.colors.error}`,
+      hover: '#F3F3F3',
+      active: '#E6E6E6',
+    },
   },
 };
 
@@ -87,6 +96,8 @@ const darkTheme = {
     inputBorder: '#444C56',
     inputText: '#FFFFFF',
     inputPlaceholder: '#8B949E',
+    error: '#FF4D4F',
+    errorHover: '#FF7072',
   },
   spacing: {
     xs: '0.25rem',
@@ -124,6 +135,13 @@ const darkTheme = {
       text: '#F9F9F9',
       hoverBg: '#1E2A38',
       activeBg: '#273445',
+    },
+    danger: {
+      text: ({ theme }) => theme.colors.error,
+      bg: ({ theme }) => theme.colors.background,
+      border: ({ theme }) => `2px solid ${theme.colors.error}`,
+      hover: '#1E2A38',
+      active: '#273445',
     },
   },
 };

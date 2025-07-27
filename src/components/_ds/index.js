@@ -1,4 +1,4 @@
-export { Button } from './Button';
+export { Button, VARIANT as BUTTON_VARIANT } from './Button';
 export { InputField } from './InputField';
 export { Label } from './Label';
 export { ProgressBar } from './ProgressBar';

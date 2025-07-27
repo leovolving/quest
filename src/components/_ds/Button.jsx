@@ -1,6 +1,13 @@
 // components/Button.tsx
 import styled, { css } from 'styled-components';
 
+export const VARIANT = {
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  TERTIARY: 'tertiary',
+  DANGER: 'danger',
+};
+
 export const Button = styled.button`
   font-size: 1rem;
   font-weight: 600;
@@ -13,10 +20,10 @@ export const Button = styled.button`
     background 0.2s,
     color 0.2s;
 
-  ${({ theme, variant = 'primary', disabled }) => {
+  ${({ theme, variant = VARIANT.PRIMARY, disabled }) => {
     const v = theme.buttons[variant];
 
-    if (variant === 'tertiary') {
+    if (variant === VARIANT.TERTIARY) {
       return css`
         background-color: ${({ theme }) => theme.colors.background};
         color: ${({ theme }) => theme.colors.textSecondary};
