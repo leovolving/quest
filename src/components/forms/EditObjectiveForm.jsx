@@ -13,6 +13,17 @@ const Form = styled.form`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.sm};
   width: 100%;
+
+  input:not([type='checkbox']),
+  select,
+  textarea {
+    width: 100%;
+  }
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
 const Checkbox = styled.input`
@@ -23,6 +34,7 @@ const InputContainer = styled.div`
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  max-width: 100%;
 `;
 
 const Input = styled.input`
@@ -94,10 +106,10 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
   };
   return (
     <Form onSubmit={handleEditSubmit}>
-      <label>
+      <CheckboxLabel>
         <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
         Complete?
-      </label>
+      </CheckboxLabel>
       <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       <Input
         type="text"
