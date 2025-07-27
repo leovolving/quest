@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 
 import sampleData from '../data/sampleData';
@@ -7,7 +8,9 @@ import { useGameContext } from '../context/GameContext';
 const STORAGE_KEY = 'launch_quest_data';
 
 const useGameDataService = () => {
-  const { selectedGame, games, setGames } = useGameContext();
+  const { gameId } = useParams();
+  const { games, setGames } = useGameContext();
+  const selectedGame = games.find((g) => String(g.id) === String(gameId));
 
   const getGames = (initialData = []) => {
     try {
@@ -44,6 +47,13 @@ const useGameDataService = () => {
       if (objectiveIndex >= 0) {
         return { objective: category.objectives[objectiveIndex], objectiveIndex, categoryIndex: i };
       }
+    }
+  };
+
+  const getObjective = (objectiveId) => {
+    if (selectedGame) {
+      const objectiveData = getObjectiveAndCategoryIndex(objectiveId);
+      return objectiveData?.objective;
     }
   };
 
@@ -96,7 +106,15 @@ const useGameDataService = () => {
     setGames(allCurrentGames);
   };
 
-  return { initialize, addNewGame, deleteObjective, duplicateObjective, updateGame };
+  return {
+    initialize,
+    addNewGame,
+    deleteObjective,
+    duplicateObjective,
+    getObjective,
+    selectedGame,
+    updateGame,
+  };
 };
 
 export default useGameDataService;

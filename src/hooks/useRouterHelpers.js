@@ -1,12 +1,15 @@
-import { useGameContext } from '../context/GameContext';
+import { useParams } from 'react-router-dom';
 
 const useRouterHelpers = () => {
-  const { selectedGameId } = useGameContext();
+  const { gameId } = useParams();
+
+  const generateActiveGameLink = () => `/game/${gameId}`;
+
   const generateObjectiveDetailsLink = (objectiveId) => {
-    return `/game/${selectedGameId}/objective/${objectiveId}`;
+    return `${generateActiveGameLink()}/objective/${objectiveId}`;
   };
 
-  return { generateObjectiveDetailsLink };
+  return { generateActiveGameLink, generateObjectiveDetailsLink };
 };
 
 export default useRouterHelpers;
