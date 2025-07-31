@@ -13,20 +13,7 @@ import TagsList from '../components/common/TagsList';
 import { EditObjectiveForm } from '../components/forms/EditObjectiveForm';
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.sm};
-  transition: background-color 0.2s ease-in-out;
-
-  &:not(:last-of-type) {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  }
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    gap: ${({ theme }) => theme.spacing.xs};
-  }
 `;
 
 const Checkbox = styled.input`
@@ -83,9 +70,7 @@ const ObjectiveDetail = () => {
   if (!objective) {
     return (
       <div>
-        <BackLink to={generateActiveGameLink()} variant="tertiary">
-          ← Back
-        </BackLink>
+        <BackLink to={generateActiveGameLink()} variant="tertiary" />
         <p>Objective not found.</p>
       </div>
     );
