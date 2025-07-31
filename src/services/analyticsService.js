@@ -1,6 +1,11 @@
 import { useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
+
+import { ACTION_NAMES } from '../constants';
 
 function useAnalytics() {
+  const { pathname } = useLocation();
+
   // Ensure anonymous user ID is created once
   useEffect(() => {
     if (!localStorage.getItem('user_id')) {
@@ -24,9 +29,10 @@ function useAnalytics() {
   }, []);
 
   // Log a key action
-  const logAction = useCallback((actionName) => {
+  const logAction = useCallback((actionName, additionalData = {}) => {
     const actions = JSON.parse(localStorage.getItem('actions') || '[]');
-    const newAction = { action: actionName, timestamp: Date.now() };
+    const newAction = { action: actionName, timestamp: Date.now(), ...additionalData };
+    // TODO: only log on in dev env
     console.info(`${actionName} - ${newAction.timestamp}`);
     actions.push(newAction);
     localStorage.setItem('actions', JSON.stringify(actions));
@@ -47,6 +53,12 @@ function useAnalytics() {
     a.download = 'feedback-data.json';
     a.click();
   }, []);
+
+  // Automatically log when path changes
+  useEffect(() => {
+    logAction(ACTION_NAMES.pathNavigation, { pathname });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return { logAction, exportAnalytics };
 }
