@@ -77,6 +77,12 @@ const lightTheme = {
       active: '#E6E6E6',
     },
   },
+  banner: {
+    info: { bg: '#C9D1D9', text: '#303A44', border: '#303A44', hover: '#ABB7C3' },
+    warning: { bg: '#FFA500', text: '#382400', border: '#382400', hover: '#CC8400' },
+    danger: { bg: '#FF6669', text: '#000000', border: '#000000', hover: '#FF3236' },
+    success: { bg: '#48C774', text: '#0C2715', border: '#0C2715', hover: '#33A85C' },
+  },
 };
 
 const darkTheme = {
@@ -143,6 +149,12 @@ const darkTheme = {
       hover: '#1E2A38',
       active: '#273445',
     },
+  },
+  banner: {
+    info: { text: '#C9D1D9', bg: '#303A44', border: '#C9D1D9', hover: '#455361' },
+    warning: { text: '#FFA500', bg: '#382400', border: '#FFA500', hover: '#6B4400' },
+    danger: { text: '#FF6669', bg: '#000000', border: '#FF6669', hover: '#191919' },
+    success: { text: '#48C774', bg: '#0C2715', border: '#48C774', hover: '#184E29' },
   },
 };
 
