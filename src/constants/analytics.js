@@ -19,6 +19,7 @@ export const ACTION_NAMES = {
   addNewObjectiveTagValueFocus: 'add_new_objective_tag_value_focus',
   addNewObjectiveTitleBlur: 'add_new_objective_title_blur',
   addNewObjectiveTitleFocus: 'add_new_objective_title_focus',
+  editObjectiveCanceled: 'edit_objective_canceled',
   editObjectiveCategoryBlur: 'edit_objective_category_blur',
   editObjectiveCategoryFocus: 'edit_objective_category_focus',
   editObjectiveCompleteToggle: 'edit_objective_complete_toggle',
