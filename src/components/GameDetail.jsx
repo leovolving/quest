@@ -38,6 +38,7 @@ const GameTitle = styled.h1`
 
 const ViewControls = styled.div`
   display: flex;
+  justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   padding: ${({ theme }) => theme.spacing.md};
@@ -53,7 +54,9 @@ const ControlGroup = styled.div`
 `;
 
 const Flex1ControlGroup = styled(ControlGroup)`
-  flex: 1;
+  @media (max-width: 350px) {
+    flex: 1;
+  }
 `;
 
 const Label = styled.label`

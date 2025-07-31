@@ -15,13 +15,13 @@ const Wrapper = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.sm};
   transition: background-color 0.2s ease-in-out;
+  flex-direction: column;
 
   &:not(:last-of-type) {
     border-bottom: 2px solid ${({ theme }) => theme.colors.border};
   }
 
   @media (max-width: 600px) {
-    flex-direction: column;
     gap: ${({ theme }) => theme.spacing.xs};
   }
 `;
@@ -118,7 +118,7 @@ const ObjectiveItem = ({ objective }) => {
           <Title>{objective.title}</Title>
         </label>
         <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
-          Expand
+          Manage
         </Button>
       </TitleContainer>
       {objective.notes && <Note>{objective.notes}</Note>}

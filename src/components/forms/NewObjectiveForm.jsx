@@ -17,7 +17,9 @@ const FormContainer = styled.form`
 
   label {
     font-weight: bold;
-    margin-top: 1rem;
+    display: block;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 
   input,
@@ -29,12 +31,17 @@ const FormContainer = styled.form`
     display: block;
     margin-top: 8px;
     min-width: 0;
+    width: 100%;
     align-items: center;
   }
 
   button {
     align-self: flex-start;
   }
+`;
+
+const TagsHeader = styled.h4`
+  margin-bottom: 0;
 `;
 
 const InputContainer = styled.div`
@@ -116,7 +123,7 @@ const NewObjectiveForm = () => {
     <FormContainer onSubmit={handleAddObjective}>
       <h3>Add new objective</h3>
       <label>
-        Category:
+        Category
         <input
           list="category-options"
           value={selectedCategoryName}
@@ -130,7 +137,7 @@ const NewObjectiveForm = () => {
         </datalist>
       </label>
       <label>
-        Title:
+        Title
         <input
           type="text"
           value={newObjectiveTitle}
@@ -139,7 +146,7 @@ const NewObjectiveForm = () => {
         />
       </label>
       <label>
-        Note:
+        Notes
         <textarea
           value={newObjectiveNote}
           onChange={(e) => setNewObjectiveNote(e.target.value)}
@@ -147,7 +154,7 @@ const NewObjectiveForm = () => {
         />
       </label>
       <label>
-        Progress:
+        Progress
         <InputContainer>
           <input
             type="number"
@@ -166,7 +173,7 @@ const NewObjectiveForm = () => {
           />
         </InputContainer>
       </label>
-      <h4>Tags</h4>
+      <TagsHeader>Tags</TagsHeader>
       <TagEditor objective={{ tags: newTags }} onUpdateTags={(t) => setNewTags(t)} />
 
       <Button type="submit" variant="primary">
