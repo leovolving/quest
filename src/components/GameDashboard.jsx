@@ -5,7 +5,8 @@ import { Button, ProgressBar } from '../components/_ds';
 
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
-import { STATUS_OPTIONS } from '../constants';
+import { ACTION_NAMES, STATUS_OPTIONS } from '../constants';
+import useAnalytics from '../services/analyticsService';
 
 import NewGameForm from './forms/NewGameForm';
 
@@ -110,6 +111,7 @@ const StatusTitle = styled.h2`
 
 const GameDashboard = () => {
   const { games } = useGameContext();
+  const { logAction } = useAnalytics();
   const [isNewGameFormOpen, toggleIsNewGameFormOpen] = useStateToggleBoolean(false);
 
   const groupedGames = games.reduce((acc, game) => {
@@ -125,11 +127,16 @@ const GameDashboard = () => {
     return acc;
   }, {});
 
+  const handleAddNewGameClick = () => {
+    logAction(ACTION_NAMES.addNewGameClicked);
+    toggleIsNewGameFormOpen();
+  };
+
   return (
     <Dashboard>
       <Header>
         <Title>Your Games</Title>
-        <Button variant="secondary" onClick={toggleIsNewGameFormOpen}>
+        <Button variant="secondary" onClick={handleAddNewGameClick}>
           + Add new game
         </Button>
       </Header>

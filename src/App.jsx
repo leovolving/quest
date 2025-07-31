@@ -8,6 +8,7 @@ import useScrollToTopOnNewRoute from './hooks/useScrollToTopOnNewRoute';
 
 import _404 from './pages/_404';
 
+import { MvpBanner } from './components/global';
 import GameDashboard from './components/GameDashboard';
 import GameDetail from './components/GameDetail';
 import ObjectiveDetail from './pages/ObjectiveDetail';
@@ -49,6 +50,7 @@ function App() {
           <Logo src="/trackquest_banner_v2.png" width="300" />
         </Link>
       </GlobalNav>
+      <MvpBanner />
       <Routes>
         <Route path="/game/:gameId/objective/:objectiveId" element={<ObjectiveDetail />} />
         <Route path="/game/:gameId" element={<GameDetail />} />
