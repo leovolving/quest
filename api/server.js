@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 const app = express();
@@ -20,8 +22,20 @@ app.use(
 );
 app.use(express.json());
 
-console.log(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+// Respond to preflight requests
+app.options('*', (req, res) => {
+  res.sendStatus(200);
+});
 
 app.post('/log-analytics', async (req, res) => {
   try {
