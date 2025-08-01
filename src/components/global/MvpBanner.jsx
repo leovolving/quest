@@ -2,8 +2,6 @@ import styled from 'styled-components';
 
 import { APP_NAME } from '../../constants';
 
-import useAnalytics from '../../services/analyticsService';
-
 import { Banner, BannerActionContainer, BannerButton, BANNER_VARIANT } from '../_ds';
 
 const BannerComponent = styled(Banner)`
@@ -11,7 +9,6 @@ const BannerComponent = styled(Banner)`
 `;
 
 export const MvpBanner = () => {
-  const { exportAnalytics } = useAnalytics();
   return (
     <BannerComponent variant={BANNER_VARIANT.WARN} stacked>
       <div>
@@ -30,9 +27,6 @@ export const MvpBanner = () => {
           noreferrer
         >
           Give feedback
-        </BannerButton>
-        <BannerButton floating onClick={exportAnalytics}>
-          Export analytics
         </BannerButton>
       </BannerActionContainer>
     </BannerComponent>
