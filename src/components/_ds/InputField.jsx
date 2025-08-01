@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 
 import { Label } from './Label';
+import useAnalytics from '../../services/analyticsService';
 
 const Input = styled.input`
   width: 100%;
@@ -19,9 +20,32 @@ const Input = styled.input`
   }
 `;
 
-export const InputField = ({ label, type = 'text', ...inputProps }) => (
-  <Label>
-    {label}
-    <Input type={type} {...inputProps} />
-  </Label>
-);
+export const InputField = ({
+  label,
+  type = 'text',
+  focusActionName,
+  blurActionName,
+  analyticsMetadata = {},
+  ...inputProps
+}) => {
+  const { logAction } = useAnalytics();
+
+  const handleFocus = () => {
+    if (focusActionName) {
+      logAction(focusActionName, analyticsMetadata);
+    }
+  };
+
+  const handleBlur = () => {
+    if (blurActionName) {
+      logAction(blurActionName, analyticsMetadata);
+    }
+  };
+
+  return (
+    <Label>
+      {label}
+      <Input type={type} {...inputProps} onFocus={handleFocus} onBlur={handleBlur} />
+    </Label>
+  );
+};

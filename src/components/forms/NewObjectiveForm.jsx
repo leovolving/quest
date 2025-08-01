@@ -1,11 +1,14 @@
-// src/components/forms/NewObjectiveForm.js
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Button } from '../../components/_ds';
+import { Button, InputField } from '../../components/_ds';
 
 import { useGameContext } from '../../context/GameContext';
 import useGameDataService from '../../services/gameDataService';
+import useAnalytics from '../../services/analyticsService';
+
+import { ACTION_NAMES } from '../../constants';
 
 import TagEditor from './TagEditor';
 
@@ -35,6 +38,17 @@ const FormContainer = styled.form`
     align-items: center;
   }
 
+  fieldset {
+    padding: 0;
+    margin: 1.5rem 0 0;
+    border: none;
+
+    label {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
   button {
     align-self: flex-start;
   }
@@ -50,13 +64,19 @@ const InputContainer = styled.div`
   align-items: center;
 `;
 
+const FlexInputField = styled(InputField)`
+  flex: 1;
+`;
+
 const NewObjectiveForm = () => {
   const { selectedGame: game } = useGameContext();
   const { updateGame } = useGameDataService();
+  const { logAction } = useAnalytics();
+  const { gameId } = useParams();
 
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
-  const [selectedCategoryName, setSelectedCategoryName] = useState(game.categories[0]?.name || '');
+  const [selectedCategoryName, setSelectedCategoryName] = useState('');
   const [newTags, setNewTags] = useState([]);
   const [progressCurrent, setProgressCurrent] = useState('');
   const [progressTotal, setProgressTotal] = useState('');
@@ -70,6 +90,8 @@ const NewObjectiveForm = () => {
     setProgressCurrent('');
     setProgressTotal('');
   };
+
+  const analyticsMetadata = { game_id: gameId };
 
   const handleAddObjective = (e) => {
     e.preventDefault();
@@ -115,6 +137,10 @@ const NewObjectiveForm = () => {
     });
 
     const updatedGame = { ...game, categories: updatedCategories };
+    logAction(ACTION_NAMES.addNewObjectiveSuccess, {
+      ...analyticsMetadata,
+      objective_id: newObjective.id,
+    });
 
     updateGame(updatedGame, { onSuccess: resetForm });
   };
@@ -122,59 +148,83 @@ const NewObjectiveForm = () => {
   return (
     <FormContainer onSubmit={handleAddObjective}>
       <h3>Add new objective</h3>
-      <label>
-        Category
-        <input
-          list="category-options"
-          value={selectedCategoryName}
-          onChange={(e) => setSelectedCategoryName(e.target.value)}
-          placeholder="Category name"
-        />
-        <datalist id="category-options">
-          {uniqueCategoryNames.map((name) => (
-            <option key={name} value={name} />
-          ))}
-        </datalist>
-      </label>
-      <label>
-        Title
-        <input
-          type="text"
-          value={newObjectiveTitle}
-          onChange={(e) => setNewObjectiveTitle(e.target.value)}
-          placeholder="Objective title"
-        />
-      </label>
-      <label>
-        Notes
-        <textarea
-          value={newObjectiveNote}
-          onChange={(e) => setNewObjectiveNote(e.target.value)}
-          placeholder="Optional note"
-        />
-      </label>
-      <label>
-        Progress
+
+      <InputField
+        list="category-options"
+        value={selectedCategoryName}
+        onChange={(e) => setSelectedCategoryName(e.target.value)}
+        placeholder="Category name"
+        label="Category"
+        blurActionName={ACTION_NAMES.addNewObjectiveCategoryBlur}
+        focusActionName={ACTION_NAMES.addNewObjectiveCategoryFocus}
+        analyticsMetadata={analyticsMetadata}
+      />
+      <datalist id="category-options">
+        {uniqueCategoryNames.map((name) => (
+          <option key={name} value={name} />
+        ))}
+      </datalist>
+      <InputField
+        type="text"
+        value={newObjectiveTitle}
+        onChange={(e) => setNewObjectiveTitle(e.target.value)}
+        placeholder="Objective title"
+        label="Title"
+        blurActionName={ACTION_NAMES.addNewObjectiveTitleBlur}
+        focusActionName={ACTION_NAMES.addNewObjectiveTitleFocus}
+        analyticsMetadata={analyticsMetadata}
+      />
+      <InputField
+        value={newObjectiveNote}
+        onChange={(e) => setNewObjectiveNote(e.target.value)}
+        placeholder="Optional note"
+        label="Notes"
+        as="textarea"
+        blurActionName={ACTION_NAMES.addNewObjectiveNoteBlur}
+        focusActionName={ACTION_NAMES.addNewObjectiveNoteFocus}
+        analyticsMetadata={analyticsMetadata}
+      />
+      <fieldset>
+        <legend>Progress</legend>
         <InputContainer>
-          <input
+          <FlexInputField
             type="number"
             min="0"
             value={progressCurrent}
             onChange={(e) => setProgressCurrent(e.target.value)}
-            placeholder="Current"
+            label="Current"
+            blurActionName={ACTION_NAMES.addNewObjectiveProgressCurrentBlur}
+            focusActionName={ACTION_NAMES.addNewObjectiveProgressCurrentFocus}
+            analyticsMetadata={analyticsMetadata}
           />
           <span>/</span>
-          <input
+          <FlexInputField
             type="number"
             min="1"
             value={progressTotal}
             onChange={(e) => setProgressTotal(e.target.value)}
-            placeholder="Total"
+            label="Total"
+            blurActionName={ACTION_NAMES.addNewObjectiveProgressTotalBlur}
+            focusActionName={ACTION_NAMES.addNewObjectiveProgressTotalFocus}
+            analyticsMetadata={analyticsMetadata}
           />
         </InputContainer>
-      </label>
+      </fieldset>
       <TagsHeader>Tags</TagsHeader>
-      <TagEditor objective={{ tags: newTags }} onUpdateTags={(t) => setNewTags(t)} />
+      <TagEditor
+        objective={{ tags: newTags }}
+        onUpdateTags={(t) => setNewTags(t)}
+        typeInputProps={{
+          analyticsMetadata,
+          blurActionName: ACTION_NAMES.addNewObjectiveTagTypeBlur,
+          focusActionName: ACTION_NAMES.addNewObjectiveTagTypeFocus,
+        }}
+        valueInputProps={{
+          analyticsMetadata,
+          blurActionName: ACTION_NAMES.addNewObjectiveTagValueBlur,
+          focusActionName: ACTION_NAMES.addNewObjectiveTagValueFocus,
+        }}
+      />
 
       <Button type="submit" variant="primary">
         Add Objective

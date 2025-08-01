@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
+import useAnalytics from '../services/analyticsService';
 
 import { Button } from '../components/_ds';
+import { ACTION_NAMES } from '../constants';
 
 useStateToggleBoolean;
 
@@ -216,6 +218,17 @@ const ThemeToggle = styled(Button)`
 
 const ThemeContextProvider = ({ children }) => {
   const [isDarkMode, toggleIsDarkMode, setIsDarkMode] = useStateToggleBoolean(false);
+  const { logAction } = useAnalytics();
+
+  const handleToggle = () => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    logAction(ACTION_NAMES.themeToggleClicked, {
+      new_mode: isDarkMode ? 'light' : 'dark',
+      prefers_dark: prefersDark,
+    });
+
+    toggleIsDarkMode();
+  };
 
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -226,7 +239,7 @@ const ThemeContextProvider = ({ children }) => {
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <GlobalStyle />
-      <ThemeToggle variant="tertiary" onClick={toggleIsDarkMode}>
+      <ThemeToggle variant="tertiary" onClick={handleToggle}>
         {isDarkMode ? '☀️ Light mode' : '🌙 Dark mode'}
       </ThemeToggle>
       {children}

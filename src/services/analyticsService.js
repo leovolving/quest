@@ -5,11 +5,15 @@ import { ACTION_NAMES } from '../constants';
 import { endpoint } from '../utils/api';
 
 function useAnalytics() {
+  const { pathname } = useLocation();
+
   const isLocal = location.host.startsWith('localhost');
+
   const logAction = useCallback((actionName, properties = {}) => {
     if (isLocal) {
       console.info({ actionName, properties });
     } else {
+      properties.pathname = pathname;
       fetch(endpoint('/log-analytics'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

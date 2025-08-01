@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import useGameDataService from '../../services/gameDataService';
 import useToggleObjective from '../../hooks/useToggleObjective';
+import useAnalytics from '../../services/analyticsService';
 
-import { Button } from '../_ds';
+import { Button, InputField } from '../_ds';
 
 import TagEditor from './TagEditor';
+import { ACTION_NAMES } from '../../constants';
 
 const Form = styled.form`
   display: flex;
@@ -37,20 +40,6 @@ const InputContainer = styled.div`
   max-width: 100%;
 `;
 
-const Input = styled.input`
-  padding: ${({ theme }) => theme.spacing.sm};
-  background-color: ${({ theme }) => theme.colors.inputBackground};
-  color: ${({ theme }) => theme.colors.text};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -64,6 +53,10 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
 
   const toggleObjective = useToggleObjective();
   const { selectedGame, updateGame } = useGameDataService();
+  const { logAction } = useAnalytics();
+  const { gameId } = useParams();
+
+  const analyticsMetadata = { game_id: gameId, objective_id: objective.id };
 
   const updateObjective = (updatedObj) => {
     const updatedGame = {
@@ -79,6 +72,7 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
             }
       ),
     };
+    logAction(ACTION_NAMES.editObjectiveSuccess, analyticsMetadata);
     updateGame(updatedGame);
   };
 
@@ -97,7 +91,16 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
     onClose();
   };
 
+  const handleCancel = () => {
+    logAction(ACTION_NAMES.editObjectiveCanceled, analyticsMetadata);
+    onClose();
+  };
+
   const handleChange = () => {
+    logAction(ACTION_NAMES.editObjectiveCompleteToggle, {
+      ...analyticsMetadata,
+      new_value: !objective.completed,
+    });
     toggleObjective(objective);
   };
 
@@ -110,39 +113,70 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
         <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
         Complete?
       </CheckboxLabel>
-      <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-      <Input
+      <InputField
         type="text"
-        placeholder="Notes (optional)"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        label="Title"
+        required
+        blurActionName={ACTION_NAMES.editObjectiveTitleBlur}
+        focusActionName={ACTION_NAMES.editObjectiveTitleFocus}
+        analyticsMetadata={analyticsMetadata}
+      />
+      <InputField
+        type="text"
+        label="Notes (optional)"
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
+        blurActionName={ACTION_NAMES.editObjectiveNoteBlur}
+        focusActionName={ACTION_NAMES.editObjectiveNoteFocus}
+        analyticsMetadata={analyticsMetadata}
       />
       <label>
         Progress:
         <InputContainer>
-          <input
+          <InputField
             type="number"
             min="0"
             value={progressCurrent}
             onChange={(e) => setProgressCurrent(e.target.value)}
-            placeholder="Current"
+            label="Current"
+            blurActionName={ACTION_NAMES.editObjectiveProgressCurrentBlur}
+            focusActionName={ACTION_NAMES.editObjectiveProgressCurrentFocus}
+            analyticsMetadata={analyticsMetadata}
           />
           <span>/</span>
-          <input
+          <InputField
             type="number"
             min="1"
             value={progressTotal}
             onChange={(e) => setProgressTotal(e.target.value)}
-            placeholder="Total"
+            label="Total"
+            blurActionName={ACTION_NAMES.editObjectiveProgressTotalBlur}
+            focusActionName={ACTION_NAMES.editObjectiveProgressTotalFocus}
+            analyticsMetadata={analyticsMetadata}
           />
         </InputContainer>
       </label>
-      <TagEditor objective={objective} onUpdateTags={handleTagUpdate} />
+      <TagEditor
+        objective={objective}
+        onUpdateTags={handleTagUpdate}
+        typeInputProps={{
+          analyticsMetadata,
+          blurActionName: ACTION_NAMES.editObjectiveTagTypeBlur,
+          focusActionName: ACTION_NAMES.editObjectiveTagTypeFocus,
+        }}
+        valueInputProps={{
+          analyticsMetadata,
+          blurActionName: ACTION_NAMES.editObjectiveTagValueBlur,
+          focusActionName: ACTION_NAMES.editObjectiveTagValueFocus,
+        }}
+      />
       <ButtonGroup>
         <Button type="submit" variant="primary">
           Save
         </Button>
-        <Button type="button" onClick={onClose} variant="secondary">
+        <Button type="button" onClick={handleCancel} variant="secondary">
           Cancel
         </Button>
       </ButtonGroup>

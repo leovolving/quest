@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { useGameContext } from '../../context/GameContext';
 
+import { InputField } from '../_ds';
+
 const Wrapper = styled.div`
   margin-top: 0.5rem;
 `;
@@ -14,15 +16,7 @@ export const TagForm = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const Input = styled.input`
-  padding: 0.25rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: ${({ theme }) => theme.inputBackground};
-  color: ${({ theme }) => theme.text};
-`;
-
-const TagEditor = ({ objective = {}, onUpdateTags }) => {
+const TagEditor = ({ objective = {}, onUpdateTags, typeInputProps = {}, valueInputProps = {} }) => {
   const { allTagTypes, selectedGame } = useGameContext();
 
   const tagValuesForType = useCallback(
@@ -52,13 +46,15 @@ const TagEditor = ({ objective = {}, onUpdateTags }) => {
     <Wrapper>
       {tags.map((t, idx) => (
         <TagForm key={`tag-form-${idx}`}>
-          <Input
+          <InputField
             list={`tag-types-${idx}`}
             value={t.type}
             onChange={(e) => handleUpdateTags(e.target.value, t.value, idx)}
-            placeholder="Tag type"
+            placeholder="Location"
             name={`tag-form-type-${idx}`}
             id={`tag-form-type-${idx}`}
+            label="Type"
+            {...typeInputProps}
           />
           <datalist id={`tag-types-${idx}`}>
             {allTagTypes.map((type, idx) => (
@@ -66,13 +62,15 @@ const TagEditor = ({ objective = {}, onUpdateTags }) => {
             ))}
           </datalist>
 
-          <Input
+          <InputField
             list={`tag-values-${idx}`}
             value={t.value}
             onChange={(e) => handleUpdateTags(t.type, e.target.value, idx)}
-            placeholder="Tag value"
+            placeholder="Valentine"
             name={`tag-form-value-${idx}`}
             id={`tag-form-value-${idx}`}
+            label="Value"
+            {...valueInputProps}
           />
           <datalist id={`tag-values-${idx}`}>
             {tagValuesForType(t.type).map((val, idx) => (

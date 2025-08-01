@@ -1,13 +1,14 @@
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { ACTION_NAMES } from '../constants';
 import useToggleObjective from '../hooks/useToggleObjective';
 import useRouterHelpers from '../hooks/useRouterHelpers';
+import useAnalytics from '../services/analyticsService';
 
-import { useGameContext } from '../context/GameContext';
-import useGameDataService from '../services/gameDataService';
+import { Button } from './_ds';
 
-import { Button, ProgressBar } from './_ds';
-import { Link } from 'react-router-dom';
+import { ObjectiveProgress } from './common/ObjectiveProgress';
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,63 +52,20 @@ const Note = styled.em`
   display: block;
 `;
 
-const ActionsContainer = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  flex-wrap: wrap;
-  margin-top: ${({ theme }) => theme.spacing.md};
-`;
-
-const ProgressText = styled.p`
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const ProgressControls = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  align-items: center;
-  width: 100%;
-`;
-
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
-  const { selectedGame } = useGameContext();
-  const { updateGame } = useGameDataService();
   const { generateObjectiveDetailsLink } = useRouterHelpers();
+  const { logAction } = useAnalytics();
+  const { gameId } = useParams();
+
+  const analyticsMetadata = { objective_id: objective.id, game_id: gameId };
 
   const handleChange = () => {
-    toggleObjective(objective);
-  };
-
-  // TODO: use game data service for these game-updating functions
-
-  const handleProgressChange = (delta) => {
-    const updatedCategories = selectedGame.categories.map((cat) => {
-      const updatedObjectives = cat.objectives.map((obj) => {
-        if (obj.id !== objective.id) return obj;
-
-        const updatedCurrent = Math.max(
-          0,
-          Math.min((obj.progress?.current || 0) + delta, obj.progress?.total || 0)
-        );
-
-        return {
-          ...obj,
-          progress: {
-            ...obj.progress,
-            current: updatedCurrent,
-          },
-          completed: updatedCurrent >= obj.progress.total,
-        };
-      });
-
-      return { ...cat, objectives: updatedObjectives };
+    logAction(ACTION_NAMES.objectiveItemCompleteToggle, {
+      ...analyticsMetadata,
+      new_value: !objective.completed,
     });
-
-    const updatedGame = { ...selectedGame, categories: updatedCategories };
-    updateGame(updatedGame);
+    toggleObjective(objective);
   };
 
   return (
@@ -123,22 +81,10 @@ const ObjectiveItem = ({ objective }) => {
       </TitleContainer>
       {objective.notes && <Note>{objective.notes}</Note>}
 
-      {objective.progress && (
-        <>
-          <ProgressText>
-            Progress: {objective.progress.current} / {objective.progress.total}
-          </ProgressText>
-          <ProgressControls>
-            <Button variant="secondary" onClick={() => handleProgressChange(-1)}>
-              -
-            </Button>
-            <ProgressBar value={objective.progress.current} max={objective.progress.total} />
-            <Button variant="secondary" onClick={() => handleProgressChange(1)}>
-              +
-            </Button>
-          </ProgressControls>
-        </>
-      )}
+      <ObjectiveProgress
+        objective={objective}
+        onChangeActionName={ACTION_NAMES.objectiveItemProgressChanged}
+      />
     </Wrapper>
   );
 };

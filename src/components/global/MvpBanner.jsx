@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-import { APP_NAME } from '../../constants';
+import { ACTION_NAMES, APP_NAME } from '../../constants';
+
+import useAnalytics from '../../services/analyticsService';
 
 import { Banner, BannerActionContainer, BannerButton, BANNER_VARIANT } from '../_ds';
 
@@ -9,6 +11,12 @@ const BannerComponent = styled(Banner)`
 `;
 
 export const MvpBanner = () => {
+  const { logAction } = useAnalytics();
+
+  const onGiveFeedbackClick = () => {
+    logAction(ACTION_NAMES.mvpBannerGiveFeedbackClicked);
+  };
+
   return (
     <BannerComponent variant={BANNER_VARIANT.WARN} stacked>
       <div>
@@ -25,6 +33,7 @@ export const MvpBanner = () => {
           target="_blank"
           noopener
           noreferrer
+          onClick={onGiveFeedbackClick}
         >
           Give feedback
         </BannerButton>

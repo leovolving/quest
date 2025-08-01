@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
+import useAnalytics from '../services/analyticsService';
 
-import { STATUS_OPTIONS } from '../constants';
+import { ACTION_NAMES, STATUS_OPTIONS } from '../constants';
 
 import CategoryList from './CategoryList';
 import TagView from './TagView';
@@ -75,6 +77,8 @@ const GameDetail = () => {
   const [hideCompleted, setHideCompleted] = useState(false);
   const { selectedGame: game } = useGameContext();
   const { updateGame } = useGameDataService();
+  const { logAction } = useAnalytics();
+  const { gameId } = useParams();
 
   if (!game) {
     return (
@@ -87,6 +91,7 @@ const GameDetail = () => {
     );
   }
 
+  const analyticsMetadata = { game_id: gameId };
   const tagTypes = Array.from(
     new Set(
       game.categories.flatMap((cat) =>
@@ -112,6 +117,15 @@ const GameDetail = () => {
     updateGame(updatedGame);
   };
 
+  const handleCompletedVisibilityChange = () => {
+    const newValue = !hideCompleted;
+    logAction(ACTION_NAMES.gameDetailHideCompletedClicked, {
+      ...analyticsMetadata,
+      to_be_visible: newValue,
+    });
+    setHideCompleted(newValue);
+  };
+
   const isUsingTags = tagTypes.length > 0;
   const hasObjectives = game.categories.some((c) => c.objectives?.length > 0);
   const shouldShowGameControls = isUsingTags || hasObjectives;
@@ -128,6 +142,8 @@ const GameDetail = () => {
           onChange={onUpdateStatus}
           options={STATUS_OPTIONS}
           value={game.status || 'not-played'}
+          changeActionName={ACTION_NAMES.gameDetailGameStatusChanged}
+          analyticsMetadata={analyticsMetadata}
         />
       </GameHeader>
 
@@ -142,6 +158,8 @@ const GameDetail = () => {
                 options={[{ value: '', label: 'Category' }].concat(
                   tagTypes.map((type) => ({ label: `Tag: ${type}`, value: type }))
                 )}
+                changeActionName={ACTION_NAMES.gameDetailGroupingChanged}
+                analyticsMetadata={analyticsMetadata}
               />
             </ControlGroup>
           )}
@@ -151,7 +169,7 @@ const GameDetail = () => {
               <Checkbox
                 type="checkbox"
                 checked={hideCompleted}
-                onChange={() => setHideCompleted((prev) => !prev)}
+                onChange={handleCompletedVisibilityChange}
                 id="hide-completed"
               />
               <Label htmlFor="hide-completed">Hide completed</Label>

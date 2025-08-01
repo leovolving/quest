@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import useAnalytics from '../../services/analyticsService';
+
 import { Label } from './Label';
 
 const Container = styled.div``;
@@ -25,15 +27,34 @@ const SelectElement = styled.select`
 
 const Option = styled.option``;
 
-export const Select = ({ id, label, onChange, options, value }) => (
-  <Container>
-    <Label htmlFor={id}>{label}</Label>
-    <SelectElement id={id} onChange={onChange} value={value}>
-      {options.map((o) => (
-        <Option key={o.value} value={o.value}>
-          {o.label}
-        </Option>
-      ))}
-    </SelectElement>
-  </Container>
-);
+export const Select = ({
+  id,
+  label,
+  onChange,
+  options,
+  value,
+  changeActionName,
+  analyticsMetadata = {},
+}) => {
+  const { logAction } = useAnalytics();
+
+  const handleChange = (e) => {
+    if (changeActionName) {
+      logAction(changeActionName, { ...analyticsMetadata, value: e.target.value });
+    }
+    onChange(e);
+  };
+
+  return (
+    <Container>
+      <Label htmlFor={id}>{label}</Label>
+      <SelectElement id={id} onChange={handleChange} value={value}>
+        {options.map((o) => (
+          <Option key={o.value} value={o.value}>
+            {o.label}
+          </Option>
+        ))}
+      </SelectElement>
+    </Container>
+  );
+};

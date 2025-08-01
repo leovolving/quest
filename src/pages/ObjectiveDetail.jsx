@@ -1,12 +1,15 @@
 import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
+import { ACTION_NAMES } from '../constants';
+import useAnalytics from '../services/analyticsService';
 import useGameDataService from '../services/gameDataService';
 import useRouterHelpers from '../hooks/useRouterHelpers';
 import useToggleObjective from '../hooks/useToggleObjective';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 
-import { Button, BUTTON_VARIANT, ProgressBar } from '../components/_ds';
+import { Button, BUTTON_VARIANT } from '../components/_ds';
+import { ObjectiveProgress } from '../components/common/ObjectiveProgress';
 
 import { BackLink } from '../components/common/BackLink';
 import TagsList from '../components/common/TagsList';
@@ -44,24 +47,14 @@ const ActionsContainer = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
-const ProgressText = styled.p`
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const ProgressControls = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  align-items: center;
-`;
-
 const ObjectiveDetail = () => {
+  const { logAction } = useAnalytics();
   const { generateActiveGameLink } = useRouterHelpers();
-  const { getObjective, selectedGame, deleteObjective, duplicateObjective, updateGame } =
-    useGameDataService();
-  const { objectiveId } = useParams();
+  const { getObjective, deleteObjective, duplicateObjective } = useGameDataService();
+  const { gameId, objectiveId } = useParams();
   const objective = getObjective(objectiveId);
+
+  const analyticsMetadata = { game_id: gameId, objective_id: objectiveId };
 
   const toggleObjective = useToggleObjective();
 
@@ -77,44 +70,27 @@ const ObjectiveDetail = () => {
   }
 
   const handleChange = () => {
+    logAction(ACTION_NAMES.objectiveDetailCompleteToggle, {
+      ...analyticsMetadata,
+      new_value: !objective.completed,
+    });
+
     toggleObjective(objective);
   };
 
-  // TODO: use game data service for these game-updating functions
+  const handleEdit = () => {
+    logAction(ACTION_NAMES.objectiveDetailEditClicked);
+    toggleIsEditing();
+  };
 
   const handleDelete = () => {
+    logAction(ACTION_NAMES.objectiveDetailDeleteClicked, analyticsMetadata);
     deleteObjective(objective.id);
   };
 
   const handleDuplicate = () => {
+    logAction(ACTION_NAMES.objectiveDetailDuplicateClicked, analyticsMetadata);
     duplicateObjective(objective.id);
-  };
-
-  const handleProgressChange = (delta) => {
-    const updatedCategories = selectedGame.categories.map((cat) => {
-      const updatedObjectives = cat.objectives.map((obj) => {
-        if (obj.id !== objective.id) return obj;
-
-        const updatedCurrent = Math.max(
-          0,
-          Math.min((obj.progress?.current || 0) + delta, obj.progress?.total || 0)
-        );
-
-        return {
-          ...obj,
-          progress: {
-            ...obj.progress,
-            current: updatedCurrent,
-          },
-          completed: updatedCurrent >= obj.progress.total,
-        };
-      });
-
-      return { ...cat, objectives: updatedObjectives };
-    });
-
-    const updatedGame = { ...selectedGame, categories: updatedCategories };
-    updateGame(updatedGame);
   };
 
   return (
@@ -130,26 +106,13 @@ const ObjectiveDetail = () => {
               <Title>{objective.title}</Title>
             </label>
             {objective.notes && <Note>{objective.notes}</Note>}
-
-            {objective.progress && (
-              <>
-                <ProgressText>
-                  Progress: {objective.progress.current} / {objective.progress.total}
-                </ProgressText>
-                <ProgressControls>
-                  <Button variant="secondary" onClick={() => handleProgressChange(-1)}>
-                    -
-                  </Button>
-                  <ProgressBar value={objective.progress.current} max={objective.progress.total} />
-                  <Button variant="secondary" onClick={() => handleProgressChange(1)}>
-                    +
-                  </Button>
-                </ProgressControls>
-              </>
-            )}
+            <ObjectiveProgress
+              objective={objective}
+              onChangeActionName={ACTION_NAMES.objectiveDetailProgressChanged}
+            />
             <TagsList tags={objective.tags} />
             <ActionsContainer>
-              <Button onClick={toggleIsEditing} variant={BUTTON_VARIANT.TERTIARY}>
+              <Button onClick={handleEdit} variant={BUTTON_VARIANT.TERTIARY}>
                 Edit objective
               </Button>
               <Button onClick={handleDuplicate} variant={BUTTON_VARIANT.SECONDARY}>

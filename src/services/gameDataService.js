@@ -1,15 +1,20 @@
 import { useParams } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 
+import { ACTION_NAMES } from '../constants';
+
 import sampleData from '../data/sampleData';
 
 import { useGameContext } from '../context/GameContext';
 
 import useRouterHelpers from '../hooks/useRouterHelpers';
 
+import useAnalytics from './analyticsService';
+
 const STORAGE_KEY = 'launch_quest_data';
 
 const useGameDataService = () => {
+  const { logAction } = useAnalytics();
   const { navigateToGame } = useRouterHelpers();
   const { gameId } = useParams();
   const { games, setGames } = useGameContext();
@@ -39,7 +44,7 @@ const useGameDataService = () => {
     newGame.id = games.length + 1;
     saveGames([...games, newGame]);
     if (typeof onSuccess === 'function') {
-      onSuccess();
+      onSuccess(newGame);
     }
   };
 
@@ -70,6 +75,7 @@ const useGameDataService = () => {
   };
 
   const deleteObjective = (objectiveId) => {
+    const analyticsMetadata = { game_id: gameId, objective_id: objectiveId };
     const game = cloneDeep(selectedGame);
     const { objective, objectiveIndex, categoryIndex } = getObjectiveAndCategoryIndex(objectiveId);
     const confirmationMessage = `Are you sure you want to delete ${objective.title}? This action cannot be undone`;
@@ -80,11 +86,15 @@ const useGameDataService = () => {
 
       game.categories[categoryIndex].objectives = newObjectives;
       updateGame(game);
+      logAction(ACTION_NAMES.objectiveDetailDeleteSuccess, analyticsMetadata);
       navigateToGame();
+    } else {
+      logAction(ACTION_NAMES.objectiveDetailDeleteCanceled, analyticsMetadata);
     }
   };
 
   const duplicateObjective = (objectiveId) => {
+    const analyticsMetadata = { game_id: gameId, objective_id: objectiveId };
     const timestamp = Date.now();
     const game = cloneDeep(selectedGame);
 
@@ -102,6 +112,7 @@ const useGameDataService = () => {
 
     game.categories[categoryIndex].objectives.splice(objectiveIndex + 1, 0, newObjective);
     updateGame(game);
+    logAction(ACTION_NAMES.objectiveDetailDuplicateSuccess, analyticsMetadata);
     navigateToGame();
   };
 

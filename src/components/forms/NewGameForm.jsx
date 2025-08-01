@@ -2,7 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { FocusTrap } from 'focus-trap-react';
 
-import { STATUS_OPTIONS } from '../../constants';
+import { ACTION_NAMES, STATUS_OPTIONS } from '../../constants';
+import useAnalytics from '../../services/analyticsService';
 
 import { Button, Select, InputField } from '../_ds';
 
@@ -52,6 +53,7 @@ const FormTitle = styled.h2`
 
 const NewGameForm = ({ isOpen, onClose }) => {
   const { addNewGame } = useGameDataService();
+  const { logAction } = useAnalytics();
   const [gameName, setGameName] = useState('');
   const [gameStatus, setGameStatus] = useState('currently-playing');
 
@@ -59,6 +61,11 @@ const NewGameForm = ({ isOpen, onClose }) => {
     setGameName('');
     setGameStatus('currently-playing');
     onClose();
+  };
+
+  const handleSuccess = (newGame) => {
+    logAction(ACTION_NAMES.addNewGameSuccess, { game_id: newGame.id });
+    resetForm();
   };
 
   const handleSubmit = (e) => {
@@ -75,14 +82,19 @@ const NewGameForm = ({ isOpen, onClose }) => {
       categories: [],
     };
 
-    addNewGame(newGame, { onSuccess: resetForm });
+    addNewGame(newGame, { onSuccess: handleSuccess });
+  };
+
+  const handleCancel = () => {
+    logAction(ACTION_NAMES.addNewGameCanceled);
+    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <FocusTrap>
-      <Overlay onClick={onClose}>
+      <Overlay onClick={handleCancel}>
         <DialogBox onClick={(e) => e.stopPropagation()}>
           <FormContainer onSubmit={handleSubmit}>
             <FormTitle>Add new game</FormTitle>
@@ -92,6 +104,8 @@ const NewGameForm = ({ isOpen, onClose }) => {
               value={gameName}
               onChange={(e) => setGameName(e.target.value)}
               placeholder="Horizon Zero Dawn"
+              focusActionName={ACTION_NAMES.addNewGameTitleFocus}
+              blurActionName={ACTION_NAMES.addNewGameTitleBlur}
               autoFocus
             />
             <Select
@@ -99,6 +113,7 @@ const NewGameForm = ({ isOpen, onClose }) => {
               onChange={(e) => setGameStatus(e.target.value)}
               options={STATUS_OPTIONS}
               value={gameStatus}
+              changeActionName={ACTION_NAMES.addNewGameStatusChanged}
             />
             <Button type="submit" variant="secondary">
               Add Game
