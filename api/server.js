@@ -8,6 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.options('/log-analytics', async (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 app.post('/log-analytics', async (req, res) => {
   try {
     const { event, local_user_id, local_session_id, properties } = req.body;
