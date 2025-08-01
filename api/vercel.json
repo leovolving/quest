@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "api/log-analytics.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [{ "src": "/log-analytics", "dest": "/api/log-analytics.js" }]
+}

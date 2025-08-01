@@ -2,56 +2,46 @@ import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { ACTION_NAMES } from '../constants';
+import { endpoint } from '../utils/api';
 
 function useAnalytics() {
-  const { pathname } = useLocation();
+  const logAction = useCallback((actionName, properties = {}) => {
+    fetch(endpoint('/log-analytics'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: actionName,
+        local_user_id: localStorage.getItem('user_id'),
+        local_session_id: sessionStorage.getItem('session_id'),
+        properties,
+      }),
+    }).catch(() => {});
+  }, []);
 
-  // Ensure anonymous user ID is created once
+  return { logAction };
+}
+
+export function useInitializeAnalytics() {
+  const { pathname } = useLocation();
+  const { logAction } = useAnalytics();
+
+  // Ensure user_id is persistent across sessions
   useEffect(() => {
     if (!localStorage.getItem('user_id')) {
       localStorage.setItem('user_id', crypto.randomUUID());
     }
   }, []);
 
-  // Start session on mount
+  // Start/end sessions and send to backend
   useEffect(() => {
-    const sessions = JSON.parse(localStorage.getItem('sessions') || '[]');
-    sessions.push({ start: Date.now() });
-    localStorage.setItem('sessions', JSON.stringify(sessions));
+    const sessionId = crypto.randomUUID();
+    sessionStorage.setItem('session_id', sessionId);
+    logAction('session_started');
 
     return () => {
-      const updated = JSON.parse(localStorage.getItem('sessions') || '[]');
-      if (updated.length > 0 && !updated[updated.length - 1].end) {
-        updated[updated.length - 1].end = Date.now();
-        localStorage.setItem('sessions', JSON.stringify(updated));
-      }
+      logAction('session_ended');
     };
-  }, []);
-
-  // Log a key action
-  const logAction = useCallback((actionName, additionalData = {}) => {
-    const actions = JSON.parse(localStorage.getItem('actions') || '[]');
-    const newAction = { action: actionName, timestamp: Date.now(), ...additionalData };
-    // TODO: only log on in dev env
-    console.info(`${actionName} - ${newAction.timestamp}`);
-    actions.push(newAction);
-    localStorage.setItem('actions', JSON.stringify(actions));
-  }, []);
-
-  // Export analytics data for testers
-  const exportAnalytics = useCallback(() => {
-    const data = {
-      user_id: localStorage.getItem('user_id'),
-      sessions: JSON.parse(localStorage.getItem('sessions') || '[]'),
-      actions: JSON.parse(localStorage.getItem('actions') || '[]'),
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'feedback-data.json';
-    a.click();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Automatically log when path changes
@@ -59,8 +49,6 @@ function useAnalytics() {
     logAction(ACTION_NAMES.pathNavigation, { pathname });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
-
-  return { logAction, exportAnalytics };
 }
 
 export default useAnalytics;
