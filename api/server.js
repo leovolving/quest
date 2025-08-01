@@ -4,35 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
-
 const app = express();
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-  })
-);
+app.use(cors());
 app.use(express.json());
-
-// Respond to preflight requests
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  console.log(`origin: ${origin}`);
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.sendStatus(200);
-});
 
 app.post('/log-analytics', async (req, res) => {
   try {

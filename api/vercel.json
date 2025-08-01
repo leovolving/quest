@@ -1,3 +1,12 @@
 {
-  "routes": [{ "src": "/log-analytics", "dest": "/api/log-analytics.js" }]
+  "routes": [
+    {
+      "src": "/log-analytics",
+      "dest": "/api/log-analytics.js",
+      "methods": ["POST", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+  ]
 }
