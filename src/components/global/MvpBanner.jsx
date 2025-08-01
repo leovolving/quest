@@ -22,8 +22,15 @@ export const MvpBanner = () => {
         Got feedback? Noticed a bug? Let us know!
       </div>
       <BannerActionContainer>
-        {/* TODO: add link to Google form */}
-        <BannerButton>Give feedback</BannerButton>
+        <BannerButton
+          as="a"
+          href="https://forms.gle/QfDbiB9oTKZbaQ2u7"
+          target="_blank"
+          noopener
+          noreferrer
+        >
+          Give feedback
+        </BannerButton>
         <BannerButton floating onClick={exportAnalytics}>
           Export data
         </BannerButton>
