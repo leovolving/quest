@@ -5,20 +5,25 @@ import { ACTION_NAMES } from '../constants';
 import { endpoint } from '../utils/api';
 
 function useAnalytics() {
+  const isLocal = location.host.startsWith('localhost');
   const logAction = useCallback((actionName, properties = {}) => {
-    fetch(endpoint('/log-analytics'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event: actionName,
-        local_user_id: localStorage.getItem('user_id'),
-        local_session_id: sessionStorage.getItem('session_id'),
-        properties,
-      }),
-    }).catch(() => {});
+    if (isLocal) {
+      console.info({ actionName, properties });
+    } else {
+      fetch(endpoint('/log-analytics'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: actionName,
+          local_user_id: localStorage.getItem('user_id'),
+          local_session_id: sessionStorage.getItem('session_id'),
+          properties,
+        }),
+      }).catch(() => {});
+    }
   }, []);
 
-  return { logAction };
+  return { isLocal, logAction };
 }
 
 export function useInitializeAnalytics() {
