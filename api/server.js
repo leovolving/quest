@@ -22,7 +22,8 @@ app.use(
 );
 app.use(express.json());
 
-app.use((req, res, next) => {
+// Respond to preflight requests
+app.options('*', (req, res) => {
   const origin = req.headers.origin;
   console.log(`origin: ${origin}`);
   if (allowedOrigins.includes(origin)) {
@@ -30,11 +31,6 @@ app.use((req, res, next) => {
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
-
-// Respond to preflight requests
-app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 
