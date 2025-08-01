@@ -147,7 +147,9 @@ const GameDashboard = () => {
           {games.map((game) => (
             <GameCardButton key={game.id} to={`/game/${game.id}`}>
               <h3>{game.name}</h3>
-              <p>{game.categories.length} categories</p>
+              <p>
+                {game.categories.length} {game.categories.length === 1 ? 'category' : 'categories'}
+              </p>
               <ProgressBar value={game.progress.completed} max={game.progress.total} />
             </GameCardButton>
           ))}
