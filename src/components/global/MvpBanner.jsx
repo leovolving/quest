@@ -32,7 +32,7 @@ export const MvpBanner = () => {
           Give feedback
         </BannerButton>
         <BannerButton floating onClick={exportAnalytics}>
-          Export data
+          Export analytics
         </BannerButton>
       </BannerActionContainer>
     </BannerComponent>
