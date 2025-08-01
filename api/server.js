@@ -2,12 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 
-console.log(process.env.ALLOWED_ORIGINS);
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 const app = express();
 app.use(
   cors({
-    origin: process.env.ALLOWED_ORIGINS.split(','),
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
   })
