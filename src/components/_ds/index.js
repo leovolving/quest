@@ -5,3 +5,4 @@ export { Label } from './Label';
 export { ProgressBar } from './ProgressBar';
 export { RouterLink } from './RouterLink';
 export { Select } from './Select';
+export { default as ThreeDotMenu } from './ThreeDotMenu';

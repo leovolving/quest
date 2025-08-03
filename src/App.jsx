@@ -11,7 +11,6 @@ import _404 from './pages/_404';
 import { MvpBanner } from './components/global';
 import GameDashboard from './components/GameDashboard';
 import GameDetail from './components/GameDetail';
-import ObjectiveDetail from './pages/ObjectiveDetail';
 
 const bufferPadding = '3rem'; // provides enough space for theme toggle
 
@@ -55,7 +54,6 @@ function App() {
       </GlobalNav>
       <MvpBanner />
       <Routes>
-        <Route path="/game/:gameId/objective/:objectiveId" element={<ObjectiveDetail />} />
         <Route path="/game/:gameId" element={<GameDetail />} />
         <Route path="/" element={<GameDashboard />} />
         <Route path="*" element={<_404 />} />

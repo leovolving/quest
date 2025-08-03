@@ -1,14 +1,21 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ACTION_NAMES } from '../constants';
-import useToggleObjective from '../hooks/useToggleObjective';
-import useRouterHelpers from '../hooks/useRouterHelpers';
-import useAnalytics from '../services/analyticsService';
 
-import { Button } from './_ds';
+import useToggleObjective from '../hooks/useToggleObjective';
+import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
+
+import useAnalytics from '../services/analyticsService';
+import useGameDataService from '../services/gameDataService';
 
 import { ObjectiveProgress } from './common/ObjectiveProgress';
+import TagsList from './common/TagsList';
+import { EditObjectiveForm } from './forms/EditObjectiveForm';
+
+import ThreeDotMenu from './_ds/ThreeDotMenu';
+
+import { Clone, Keyboard, TrashCan } from '../icons';
 
 const Wrapper = styled.div`
   display: flex;
@@ -54,9 +61,11 @@ const Note = styled.em`
 
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
-  const { generateObjectiveDetailsLink } = useRouterHelpers();
+  const { deleteObjective, duplicateObjective } = useGameDataService();
   const { logAction } = useAnalytics();
   const { gameId } = useParams();
+
+  const [isEditing, toggleIsEditing] = useStateToggleBoolean(false);
 
   const analyticsMetadata = { objective_id: objective.id, game_id: gameId };
 
@@ -68,23 +77,49 @@ const ObjectiveItem = ({ objective }) => {
     toggleObjective(objective);
   };
 
+  const handleEdit = () => {
+    logAction(ACTION_NAMES.objectiveDetailEditClicked);
+    toggleIsEditing();
+  };
+
+  const handleDelete = () => {
+    logAction(ACTION_NAMES.objectiveDetailDeleteClicked, analyticsMetadata);
+    deleteObjective(objective.id);
+  };
+
+  const handleDuplicate = () => {
+    logAction(ACTION_NAMES.objectiveDetailDuplicateClicked, analyticsMetadata);
+    duplicateObjective(objective.id);
+  };
+
   return (
     <Wrapper>
-      <TitleContainer>
-        <label>
-          <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
-          <Title>{objective.title}</Title>
-        </label>
-        <Button as={Link} to={generateObjectiveDetailsLink(objective.id)}>
-          Manage
-        </Button>
-      </TitleContainer>
-      {objective.notes && <Note>{objective.notes}</Note>}
+      {isEditing ? (
+        <EditObjectiveForm objective={objective} onClose={toggleIsEditing} />
+      ) : (
+        <>
+          <TitleContainer>
+            <label>
+              <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
+              <Title>{objective.title}</Title>
+            </label>
+            <ThreeDotMenu
+              options={[
+                { label: 'Edit', onClick: handleEdit, icon: Keyboard },
+                { label: 'Duplicate', onClick: handleDuplicate, icon: Clone },
+                { label: 'Delete', onClick: handleDelete, icon: TrashCan },
+              ]}
+            />
+          </TitleContainer>
+          {objective.notes && <Note>{objective.notes}</Note>}
 
-      <ObjectiveProgress
-        objective={objective}
-        onChangeActionName={ACTION_NAMES.objectiveItemProgressChanged}
-      />
+          <ObjectiveProgress
+            objective={objective}
+            onChangeActionName={ACTION_NAMES.objectiveItemProgressChanged}
+          />
+          <TagsList tags={objective.tags} />
+        </>
+      )}
     </Wrapper>
   );
 };
