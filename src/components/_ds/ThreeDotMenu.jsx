@@ -11,9 +11,10 @@ const MenuWrapper = styled.div`
 const MenuButton = styled(Button)`
   border: none;
   font-size: 24px;
-  cursor: pointer;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
 
   &:focus {
     outline: 2px solid ${({ theme }) => theme.colors.primary};
