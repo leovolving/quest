@@ -6,6 +6,7 @@ import { ACTION_NAMES } from '../constants';
 import useToggleObjective from '../hooks/useToggleObjective';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 
+import { useGameContext } from '../context/GameContext';
 import useAnalytics from '../services/analyticsService';
 import useGameDataService from '../services/gameDataService';
 
@@ -56,6 +57,7 @@ const Note = styled.em`
 const ObjectiveItem = ({ objective }) => {
   const toggleObjective = useToggleObjective();
   const { deleteObjective, duplicateObjective } = useGameDataService();
+  const { showTags } = useGameContext();
   const { logAction } = useAnalytics();
   const { gameId } = useParams();
 
@@ -108,7 +110,7 @@ const ObjectiveItem = ({ objective }) => {
             objective={objective}
             onChangeActionName={ACTION_NAMES.objectiveItemProgressChanged}
           />
-          <TagsList tags={objective.tags} />
+          {showTags && <TagsList tags={objective.tags} />}
         </>
       )}
     </Wrapper>

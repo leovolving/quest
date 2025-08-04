@@ -18,6 +18,7 @@ export const GameProvider = ({ children }) => {
   const [games, setGames] = useState([]);
   const selectedGameId = useSelectedGameId();
   const prevAllTagTypesRef = useRef([]);
+  const [showTags, setShowTags] = useState(false);
 
   // TODO: remove if sticking with location-only tag type
   const allTagTypes = useMemo(() => {
@@ -52,7 +53,16 @@ export const GameProvider = ({ children }) => {
 
   return (
     <GameContext.Provider
-      value={{ allTagTypes, locationTagValues, games, setGames, selectedGame, selectedGameId }}
+      value={{
+        allTagTypes,
+        locationTagValues,
+        games,
+        setGames,
+        selectedGame,
+        selectedGameId,
+        showTags,
+        setShowTags,
+      }}
     >
       {children}
     </GameContext.Provider>

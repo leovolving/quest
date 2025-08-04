@@ -52,11 +52,11 @@ const ViewControls = styled.div`
 
 const ControlGroup = styled.div`
   display: flex;
-  align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 const Flex1ControlGroup = styled(ControlGroup)`
+  flex-direction: column;
   @media (max-width: 350px) {
     flex: 1;
   }
@@ -95,7 +95,7 @@ const groupingOptions = Object.values(groupings);
 const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
-  const { selectedGame: game } = useGameContext();
+  const { selectedGame: game, showTags, setShowTags } = useGameContext();
   const { updateGame } = useGameDataService();
   const { logAction } = useAnalytics();
   const { gameId } = useParams();
@@ -139,6 +139,15 @@ const GameDetail = () => {
     setHideCompleted(newValue);
   };
 
+  const handleTagVisibilityChange = () => {
+    const newValue = !showTags;
+    logAction(ACTION_NAMES.gameDetailHideCompletedClicked, {
+      ...analyticsMetadata,
+      to_be_visible: newValue,
+    });
+    setShowTags(newValue);
+  };
+
   const hasObjectives = game.categories.some((c) => c.objectives?.length > 0);
 
   return (
@@ -153,13 +162,24 @@ const GameDetail = () => {
       <ViewControls>
         {hasObjectives && (
           <Flex1ControlGroup>
-            <Checkbox
-              type="checkbox"
-              checked={hideCompleted}
-              onChange={handleCompletedVisibilityChange}
-              id="hide-completed"
-            />
-            <Label htmlFor="hide-completed">Hide completed tasks</Label>
+            <div>
+              <Checkbox
+                type="checkbox"
+                checked={!hideCompleted}
+                onChange={handleCompletedVisibilityChange}
+                id="hide-completed"
+              />
+              <Label htmlFor="hide-completed">Show completed tasks</Label>
+            </div>
+            <div>
+              <Checkbox
+                type="checkbox"
+                checked={showTags}
+                onChange={handleTagVisibilityChange}
+                id="show-tags"
+              />
+              <Label htmlFor="show-tags">Show location tags</Label>
+            </div>
           </Flex1ControlGroup>
         )}
         <Select
@@ -187,6 +207,7 @@ const GameDetail = () => {
           categories={filteredForTagView}
           tagType={groupByTagType}
           hideCompleted={hideCompleted}
+          showTags={showTags}
         />
       ) : (
         filteredCategories.map((cat) => (
@@ -194,6 +215,7 @@ const GameDetail = () => {
             key={cat.id}
             category={{ ...cat, objectives: cat.visibleObjectives }}
             hideCompleted={hideCompleted}
+            showTags={showTags}
           />
         ))
       )}
