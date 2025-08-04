@@ -12,7 +12,7 @@ const DEFAULT_TAG_TYPE_CATEGORY_COLORS = [
 ];
 
 const useTagColorService = () => {
-  const { allTagTypes } = useGameContext();
+  const { allTagTypes, locationTagValues } = useGameContext();
 
   const tagTypeColorMap = allTagTypes.reduce((acc, curr, idx) => {
     const colorIndex = idx % DEFAULT_TAG_TYPE_CATEGORY_COLORS.length;
@@ -20,7 +20,13 @@ const useTagColorService = () => {
     return acc;
   }, {});
 
-  return { tagTypeColorMap };
+  const locationColorMap = locationTagValues.reduce((acc, curr, idx) => {
+    const colorIndex = idx % DEFAULT_TAG_TYPE_CATEGORY_COLORS.length;
+    acc[curr] = DEFAULT_TAG_TYPE_CATEGORY_COLORS[colorIndex];
+    return acc;
+  }, {});
+
+  return { tagTypeColorMap, locationColorMap };
 };
 
 export default useTagColorService;

@@ -19,11 +19,10 @@ const Container = styled.li`
 `;
 
 export const TagRow = ({ tag }) => {
-  const { tagTypeColorMap } = useTagColorService();
-  const tagColor = tagTypeColorMap[tag.type];
+  const { locationColorMap } = useTagColorService();
+  const tagColor = locationColorMap[tag.value];
   return (
     <Container tagColor={tagColor}>
-      <span>{tag.type}:</span>
       <strong>{tag.value}</strong>
     </Container>
   );

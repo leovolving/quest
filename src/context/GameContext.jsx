@@ -19,6 +19,7 @@ export const GameProvider = ({ children }) => {
   const selectedGameId = useSelectedGameId();
   const prevAllTagTypesRef = useRef([]);
 
+  // TODO: remove if sticking with location-only tag type
   const allTagTypes = useMemo(() => {
     const tagSet = new Set(prevAllTagTypesRef.current);
     games.forEach((game) => {
@@ -32,14 +33,27 @@ export const GameProvider = ({ children }) => {
     prevAllTagTypesRef.current = tagArray;
     return tagArray;
   }, [games]);
-
   const selectedGame = useMemo(
     () => (selectedGameId ? games.find((g) => String(g.id) === String(selectedGameId)) : null),
     [games, selectedGameId]
   );
 
+  const locationTagValues = useMemo(() => {
+    const tagSet = new Set();
+    selectedGame?.categories.forEach((cat) => {
+      cat.objectives.forEach((obj) => {
+        obj.tags?.forEach((tag) => {
+          if (tag.type?.toLowerCase() === 'location') tagSet.add(tag.value);
+        });
+      });
+    });
+    return Array.from(tagSet);
+  }, [selectedGame]);
+
   return (
-    <GameContext.Provider value={{ allTagTypes, games, setGames, selectedGame, selectedGameId }}>
+    <GameContext.Provider
+      value={{ allTagTypes, locationTagValues, games, setGames, selectedGame, selectedGameId }}
+    >
       {children}
     </GameContext.Provider>
   );

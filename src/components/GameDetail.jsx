@@ -155,9 +155,10 @@ const GameDetail = () => {
                 value={groupByTagType}
                 onChange={(e) => setGroupByTagType(e.target.value)}
                 label="Grouped by:"
-                options={[{ value: '', label: 'Category' }].concat(
-                  tagTypes.map((type) => ({ label: `Tag: ${type}`, value: type }))
-                )}
+                options={[
+                  { value: '', label: 'Quests' },
+                  { label: 'Location', value: 'location' },
+                ]}
                 changeActionName={ACTION_NAMES.gameDetailGroupingChanged}
                 analyticsMetadata={analyticsMetadata}
               />

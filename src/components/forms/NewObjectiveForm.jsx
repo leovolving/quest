@@ -147,14 +147,14 @@ const NewObjectiveForm = () => {
 
   return (
     <FormContainer onSubmit={handleAddObjective}>
-      <h3>Add new objective</h3>
+      <h3>Add new task</h3>
 
       <InputField
         list="category-options"
         value={selectedCategoryName}
         onChange={(e) => setSelectedCategoryName(e.target.value)}
-        placeholder="Category name"
-        label="Category"
+        placeholder="Quest name"
+        label="Quest"
         blurActionName={ACTION_NAMES.addNewObjectiveCategoryBlur}
         focusActionName={ACTION_NAMES.addNewObjectiveCategoryFocus}
         analyticsMetadata={analyticsMetadata}
@@ -168,7 +168,7 @@ const NewObjectiveForm = () => {
         type="text"
         value={newObjectiveTitle}
         onChange={(e) => setNewObjectiveTitle(e.target.value)}
-        placeholder="Objective title"
+        placeholder="Task title"
         label="Title"
         blurActionName={ACTION_NAMES.addNewObjectiveTitleBlur}
         focusActionName={ACTION_NAMES.addNewObjectiveTitleFocus}
@@ -210,7 +210,7 @@ const NewObjectiveForm = () => {
           />
         </InputContainer>
       </fieldset>
-      <TagsHeader>Tags</TagsHeader>
+      <TagsHeader>Locations</TagsHeader>
       <TagEditor
         objective={{ tags: newTags }}
         onUpdateTags={(t) => setNewTags(t)}
@@ -227,7 +227,7 @@ const NewObjectiveForm = () => {
       />
 
       <Button type="submit" variant="primary">
-        Add Objective
+        Add task
       </Button>
     </FormContainer>
   );

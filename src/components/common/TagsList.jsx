@@ -11,9 +11,11 @@ const Container = styled.ul`
 
 const TagsList = ({ tags = [] }) => (
   <Container>
-    {tags?.map((tag, idx) => (
-      <TagRow key={idx} tag={tag}></TagRow>
-    ))}
+    {tags
+      ?.filter((t) => t?.type?.toLowerCase() === 'location')
+      .map((tag, idx) => (
+        <TagRow key={idx} tag={tag}></TagRow>
+      ))}
   </Container>
 );
 export default TagsList;

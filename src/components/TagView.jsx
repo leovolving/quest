@@ -7,7 +7,7 @@ const groupObjectivesByTag = (categories, tagType, hideCompleted) => {
   categories.forEach((category) => {
     category.objectives.forEach((obj) => {
       obj.tags?.forEach((tag) => {
-        if (tag.type === tagType) {
+        if (tag.type?.toLowerCase() === tagType) {
           if (!grouped[tag.value]) grouped[tag.value] = [];
           if (!(hideCompleted && obj.completed)) {
             grouped[tag.value].push(obj);

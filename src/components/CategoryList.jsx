@@ -43,9 +43,7 @@ const CategoryList = ({ category, hideCompleted }) => {
     <Category>
       <CategoryTitle>{category.name}</CategoryTitle>
       {objectives.length === 0 ? (
-        <EmptyMessage>
-          {hideCompleted ? 'All objectives completed!' : 'No objectives yet'}
-        </EmptyMessage>
+        <EmptyMessage>{hideCompleted ? 'All tasks completed!' : 'No tasks yet'}</EmptyMessage>
       ) : (
         <ObjectiveList objectives={objectives} hideCompleted={hideCompleted} />
       )}

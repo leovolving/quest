@@ -16,8 +16,8 @@ export const TagForm = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const TagEditor = ({ objective = {}, onUpdateTags, typeInputProps = {}, valueInputProps = {} }) => {
-  const { allTagTypes, selectedGame } = useGameContext();
+const TagEditor = ({ objective = {}, onUpdateTags, valueInputProps = {} }) => {
+  const { locationTagValues, selectedGame } = useGameContext();
 
   const tagValuesForType = useCallback(
     (typeToMap) => {
@@ -34,46 +34,32 @@ const TagEditor = ({ objective = {}, onUpdateTags, typeInputProps = {}, valueInp
     [selectedGame]
   );
 
-  const handleUpdateTags = (type, value, idx) => {
+  const handleUpdateTags = (value, idx) => {
     const newTags = [...(objective.tags || [])];
-    newTags[idx] = { type, value };
+    newTags[idx] = { type: 'Location', value };
     onUpdateTags(newTags);
   };
 
-  const tags = (objective.tags || []).concat({ type: '', value: '' });
+  const tags = (objective.tags || [])
+    .filter((t) => t?.type?.toLowerCase() === 'location')
+    .concat({ type: '', value: '' });
 
   return (
     <Wrapper>
       {tags.map((t, idx) => (
         <TagForm key={`tag-form-${idx}`}>
           <InputField
-            list={`tag-types-${idx}`}
-            value={t.type}
-            onChange={(e) => handleUpdateTags(e.target.value, t.value, idx)}
-            placeholder="Location"
-            name={`tag-form-type-${idx}`}
-            id={`tag-form-type-${idx}`}
-            label="Type"
-            {...typeInputProps}
-          />
-          <datalist id={`tag-types-${idx}`}>
-            {allTagTypes.map((type, idx) => (
-              <option key={idx} value={type} />
-            ))}
-          </datalist>
-
-          <InputField
             list={`tag-values-${idx}`}
             value={t.value}
-            onChange={(e) => handleUpdateTags(t.type, e.target.value, idx)}
+            onChange={(e) => handleUpdateTags(e.target.value, idx)}
             placeholder="Valentine"
             name={`tag-form-value-${idx}`}
             id={`tag-form-value-${idx}`}
-            label="Value"
+            label={`Location ${idx + 1}`}
             {...valueInputProps}
           />
           <datalist id={`tag-values-${idx}`}>
-            {tagValuesForType(t.type).map((val, idx) => (
+            {tagValuesForType('Location').map((val, idx) => (
               <option key={idx} value={val} />
             ))}
           </datalist>
