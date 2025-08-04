@@ -1,6 +1,18 @@
-// src/components/TagView.js
-import React from 'react';
+import styled from 'styled-components';
 import ObjectiveList from './ObjectiveList';
+
+const TagGroup = styled.div`
+  padding: ${({ theme }) => theme.spacing.lg};
+  background-color: ${({ theme }) => theme.colors.cardBg};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 600px) {
+    padding: ${({ theme }) => theme.spacing.md};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
+`;
 
 const groupObjectivesByTag = (categories, tagType, hideCompleted) => {
   const grouped = {};
@@ -25,10 +37,10 @@ const TagView = ({ categories, tagType, hideCompleted = false }) => {
   return (
     <div className="tag-view">
       {Object.entries(grouped).map(([tagValue, objectives]) => (
-        <div key={tagValue} className="tag-group">
+        <TagGroup key={tagValue} className="tag-group">
           <h3>{tagValue}</h3>
           <ObjectiveList objectives={objectives} hideCompleted={hideCompleted} />
-        </div>
+        </TagGroup>
       ))}
     </div>
   );
