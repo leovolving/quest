@@ -8,6 +8,8 @@ import useAnalytics from '../../services/analyticsService';
 
 import { Button, InputField } from '../_ds';
 
+import { MarkCompleteButton } from '../common/MarkCompleteButton';
+
 import TagEditor from './TagEditor';
 import { ACTION_NAMES } from '../../constants';
 
@@ -17,20 +19,10 @@ const Form = styled.form`
   gap: ${({ theme }) => theme.spacing.sm};
   width: 100%;
 
-  input:not([type='checkbox']),
   select,
   textarea {
     width: 100%;
   }
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
-`;
-
-const Checkbox = styled.input`
-  margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
 const InputContainer = styled.div`
@@ -109,10 +101,7 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
   };
   return (
     <Form onSubmit={handleEditSubmit}>
-      <CheckboxLabel>
-        <Checkbox type="checkbox" checked={objective.completed} onChange={handleChange} />
-        Complete?
-      </CheckboxLabel>
+      <MarkCompleteButton isComplete={objective.completed} onClick={handleChange} />
       <InputField
         type="text"
         value={title}

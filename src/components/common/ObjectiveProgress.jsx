@@ -6,17 +6,24 @@ import useGameDataService from '../../services/gameDataService';
 import { Button, BUTTON_VARIANT, ProgressBar } from '../_ds';
 import useAnalytics from '../../services/analyticsService';
 
-const ProgressText = styled.p`
+const ProgressText = styled.span`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text};
+  position: absolute;
+  bottom: -${({ theme }) => theme.spacing.sm};
+  left: 0;
 `;
 
 const ProgressControls = styled.div`
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.5rem;
-  align-items: center;
+  margin: 0.5rem 0;
   width: 100%;
+`;
+
+const BarContainer = styled.div`
+  position: relative;
+  flex: 1;
 `;
 
 export const ObjectiveProgress = ({ objective, onChangeActionName }) => {
@@ -56,19 +63,19 @@ export const ObjectiveProgress = ({ objective, onChangeActionName }) => {
   };
 
   return objective?.progress ? (
-    <>
-      <ProgressText>
-        Progress: {objective.progress.current} / {objective.progress.total}
-      </ProgressText>
-      <ProgressControls>
-        <Button variant={BUTTON_VARIANT.SECONDARY} onClick={() => handleProgressChange(-1)}>
-          -
-        </Button>
+    <ProgressControls>
+      <Button variant={BUTTON_VARIANT.SECONDARY} onClick={() => handleProgressChange(-1)}>
+        -
+      </Button>
+      <BarContainer>
         <ProgressBar value={objective.progress.current} max={objective.progress.total} />
-        <Button variant={BUTTON_VARIANT.SECONDARY} onClick={() => handleProgressChange(1)}>
-          +
-        </Button>
-      </ProgressControls>
-    </>
+        <ProgressText>
+          Progress: {objective.progress.current} / {objective.progress.total}
+        </ProgressText>
+      </BarContainer>
+      <Button variant={BUTTON_VARIANT.SECONDARY} onClick={() => handleProgressChange(1)}>
+        +
+      </Button>
+    </ProgressControls>
   ) : null;
 };
