@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { useGameContext } from '../../context/GameContext';
@@ -17,22 +16,7 @@ export const TagForm = styled.div`
 `;
 
 const TagEditor = ({ objective = {}, onUpdateTags, valueInputProps = {} }) => {
-  const { locationTagValues, selectedGame } = useGameContext();
-
-  const tagValuesForType = useCallback(
-    (typeToMap) => {
-      const tagSet = new Set();
-      selectedGame?.categories.forEach((cat) => {
-        cat.objectives.forEach((obj) => {
-          obj.tags?.forEach((tag) => {
-            if (tag.type === typeToMap) tagSet.add(tag.value);
-          });
-        });
-      });
-      return Array.from(tagSet);
-    },
-    [selectedGame]
-  );
+  const { locationTagValues } = useGameContext();
 
   const handleUpdateTags = (value, idx) => {
     const newTags = [...(objective.tags || [])];
@@ -59,7 +43,7 @@ const TagEditor = ({ objective = {}, onUpdateTags, valueInputProps = {} }) => {
             {...valueInputProps}
           />
           <datalist id={`tag-values-${idx}`}>
-            {tagValuesForType('Location').map((val, idx) => (
+            {locationTagValues.map((val, idx) => (
               <option key={idx} value={val} />
             ))}
           </datalist>
