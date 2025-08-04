@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Button, InputField } from '../../components/_ds';
+import { Button, BUTTON_VARIANT, InputField } from '../../components/_ds';
 
 import { useGameContext } from '../../context/GameContext';
 import useGameDataService from '../../services/gameDataService';
@@ -68,7 +68,7 @@ const FlexInputField = styled(InputField)`
   flex: 1;
 `;
 
-const NewObjectiveForm = () => {
+const NewObjectiveForm = ({ initialValues = {}, onClose }) => {
   const { selectedGame: game } = useGameContext();
   const { updateGame } = useGameDataService();
   const { logAction } = useAnalytics();
@@ -76,7 +76,7 @@ const NewObjectiveForm = () => {
 
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
-  const [selectedCategoryName, setSelectedCategoryName] = useState('');
+  const [selectedCategoryName, setSelectedCategoryName] = useState(initialValues.category || '');
   const [newTags, setNewTags] = useState([]);
   const [progressCurrent, setProgressCurrent] = useState('');
   const [progressTotal, setProgressTotal] = useState('');
@@ -143,6 +143,7 @@ const NewObjectiveForm = () => {
     });
 
     updateGame(updatedGame, { onSuccess: resetForm });
+    if (onClose) onClose();
   };
 
   return (
@@ -228,9 +229,12 @@ const NewObjectiveForm = () => {
         }}
       />
 
-      <Button type="submit" variant="primary">
-        Add task
-      </Button>
+      <Button type="submit">Add task</Button>
+      {onClose && (
+        <Button onClick={onClose} variant={BUTTON_VARIANT.SECONDARY} type="button">
+          Cancel
+        </Button>
+      )}
     </FormContainer>
   );
 };

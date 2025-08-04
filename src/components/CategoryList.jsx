@@ -1,7 +1,10 @@
-// src/components/CategoryList.jsx
-import React, { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
+
+import { Button } from './_ds';
+
 import ObjectiveList from './ObjectiveList';
+import NewObjectiveForm from './forms/NewObjectiveForm';
 
 const Category = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
@@ -16,15 +19,21 @@ const Category = styled.div`
   }
 `;
 
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
 const CategoryTitle = styled.h3`
-  margin: 0 0 ${({ theme }) => theme.spacing.md};
+  margin: 0;
   color: ${({ theme }) => theme.colors.text};
   font-size: 1.25rem;
   font-weight: 600;
 
   @media (max-width: 600px) {
     font-size: 1.1rem;
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
   }
 `;
 
@@ -34,6 +43,7 @@ const EmptyMessage = styled.em`
 `;
 
 const CategoryList = ({ category, hideCompleted }) => {
+  const [showForm, setShowForm] = useState(false);
   const objectives = useMemo(
     () => (hideCompleted ? category.objectives.filter((o) => !o.completed) : category.objectives),
     [category, hideCompleted]
@@ -41,7 +51,16 @@ const CategoryList = ({ category, hideCompleted }) => {
 
   return (
     <Category>
-      <CategoryTitle>{category.name}</CategoryTitle>
+      <TitleContainer>
+        <CategoryTitle>{category.name}</CategoryTitle>
+        <Button onClick={() => setShowForm(true)}>+ Add new task</Button>
+      </TitleContainer>
+      {showForm && (
+        <NewObjectiveForm
+          initialValues={{ category: category.name }}
+          onClose={() => setShowForm(false)}
+        />
+      )}
       {objectives.length === 0 ? (
         <EmptyMessage>{hideCompleted ? 'All tasks completed!' : 'No tasks yet'}</EmptyMessage>
       ) : (
