@@ -158,6 +158,7 @@ const NewObjectiveForm = () => {
         blurActionName={ACTION_NAMES.addNewObjectiveCategoryBlur}
         focusActionName={ACTION_NAMES.addNewObjectiveCategoryFocus}
         analyticsMetadata={analyticsMetadata}
+        required
       />
       <datalist id="category-options">
         {uniqueCategoryNames.map((name) => (
@@ -173,6 +174,7 @@ const NewObjectiveForm = () => {
         blurActionName={ACTION_NAMES.addNewObjectiveTitleBlur}
         focusActionName={ACTION_NAMES.addNewObjectiveTitleFocus}
         analyticsMetadata={analyticsMetadata}
+        required
       />
       <InputField
         value={newObjectiveNote}
