@@ -12,7 +12,7 @@ import CategoryList from './CategoryList';
 import TagView from './TagView';
 import NewObjectiveForm from './forms/NewObjectiveForm';
 
-import { RouterLink, Select } from './_ds';
+import { RouterLink, SegmentControl, Select } from './_ds';
 
 const BackLink = styled(RouterLink)`
   display: flex;
@@ -43,10 +43,11 @@ const ViewControls = styled.div`
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.sm};
   background-color: ${({ theme }) => theme.colors.cardBg};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   box-shadow: ${({ theme }) => theme.shadows.sm};
+  align-items: flex-end;
 `;
 
 const ControlGroup = styled.div`
@@ -61,6 +62,12 @@ const Flex1ControlGroup = styled(ControlGroup)`
   }
 `;
 
+const ToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
 const Label = styled.label`
   color: ${({ theme }) => theme.colors.textSecondary};
   font-size: 0.875rem;
@@ -71,6 +78,19 @@ const Checkbox = styled.input`
   height: 16px;
   margin: 0;
 `;
+
+const groupings = {
+  CATEGORIES: {
+    label: 'Quests',
+    value: '',
+  },
+  LOCATION_TAG: {
+    label: 'Locations',
+    value: 'location',
+  },
+};
+
+const groupingOptions = Object.values(groupings);
 
 const GameDetail = () => {
   const [groupByTagType, setGroupByTagType] = useState('');
@@ -92,13 +112,6 @@ const GameDetail = () => {
   }
 
   const analyticsMetadata = { game_id: gameId };
-  const tagTypes = Array.from(
-    new Set(
-      game.categories.flatMap((cat) =>
-        cat.objectives.flatMap((obj) => obj.tags?.map((tag) => tag.type) || [])
-      )
-    )
-  );
 
   const filteredCategories = game.categories.map((cat) => {
     const visibleObjectives = hideCompleted
@@ -126,9 +139,7 @@ const GameDetail = () => {
     setHideCompleted(newValue);
   };
 
-  const isUsingTags = tagTypes.length > 0;
   const hasObjectives = game.categories.some((c) => c.objectives?.length > 0);
-  const shouldShowGameControls = isUsingTags || hasObjectives;
 
   return (
     <div>
@@ -137,6 +148,20 @@ const GameDetail = () => {
       </BackLink>
       <GameHeader>
         <GameTitle>{game.name}</GameTitle>
+      </GameHeader>
+
+      <ViewControls>
+        {hasObjectives && (
+          <Flex1ControlGroup>
+            <Checkbox
+              type="checkbox"
+              checked={hideCompleted}
+              onChange={handleCompletedVisibilityChange}
+              id="hide-completed"
+            />
+            <Label htmlFor="hide-completed">Hide completed tasks</Label>
+          </Flex1ControlGroup>
+        )}
         <Select
           label="Game status"
           onChange={onUpdateStatus}
@@ -145,39 +170,17 @@ const GameDetail = () => {
           changeActionName={ACTION_NAMES.gameDetailGameStatusChanged}
           analyticsMetadata={analyticsMetadata}
         />
-      </GameHeader>
+      </ViewControls>
 
-      {shouldShowGameControls && (
-        <ViewControls>
-          {isUsingTags && (
-            <ControlGroup>
-              <Select
-                value={groupByTagType}
-                onChange={(e) => setGroupByTagType(e.target.value)}
-                label="Grouped by:"
-                options={[
-                  { value: '', label: 'Quests' },
-                  { label: 'Location', value: 'location' },
-                ]}
-                changeActionName={ACTION_NAMES.gameDetailGroupingChanged}
-                analyticsMetadata={analyticsMetadata}
-              />
-            </ControlGroup>
-          )}
-
-          {hasObjectives && (
-            <Flex1ControlGroup>
-              <Checkbox
-                type="checkbox"
-                checked={hideCompleted}
-                onChange={handleCompletedVisibilityChange}
-                id="hide-completed"
-              />
-              <Label htmlFor="hide-completed">Hide completed</Label>
-            </Flex1ControlGroup>
-          )}
-        </ViewControls>
-      )}
+      <ToggleWrapper>
+        <span id="task-grouping-toggle">Grouped by:</span>
+        <SegmentControl
+          options={groupingOptions}
+          selected={groupByTagType}
+          onChange={setGroupByTagType}
+          ariaLabeledBy="task-grouping-toggle"
+        />
+      </ToggleWrapper>
 
       {groupByTagType ? (
         <TagView

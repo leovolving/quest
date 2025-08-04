@@ -1,40 +1,24 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import styled from 'styled-components';
+
+import { Button, BUTTON_VARIANT } from '.';
 
 const SegmentControlWrapper = styled.div`
   display: flex;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   overflow: hidden;
   width: fit-content;
 `;
 
-const SegmentButton = styled.button`
+const SegmentButton = styled(Button)`
   flex: 1;
   padding: 0.5rem 1.25rem;
   font-size: 1rem;
-  font-weight: ${({ selected }) => (selected ? 'bold' : 'normal')};
-  color: ${({ selected, theme }) => (selected ? theme.colors.background : theme.colors.text)};
-  background-color: ${({ selected, theme }) => (selected ? theme.colors.primary : 'transparent')};
-  border: none;
-  cursor: pointer;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-
-  &:hover {
-    background-color: ${({ selected, theme }) =>
-      selected ? theme.colors.primaryHover : theme.cardHover};
-  }
-
-  &:focus {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: -2px;
-    z-index: 1;
-  }
+  border-width: ${({ selected }) => (selected ? '2px' : '0')};
 `;
 
-export const SegmentControl = ({ options, selected, onChange }) => {
+export const SegmentControl = ({ options, selected, onChange, ariaLabeledBy }) => {
   const buttonRefs = useRef([]);
 
   const handleKeyDown = (e, index) => {
@@ -58,26 +42,36 @@ export const SegmentControl = ({ options, selected, onChange }) => {
 
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onChange(options[index]);
+      onChange(options[index].value);
     }
   };
 
+  const ariaProps = useMemo(() => {
+    const result = {};
+    if (ariaLabeledBy) result['aria-labeledby'] = ariaLabeledBy;
+    else result['aria-label'] = 'Toggle view';
+    return result;
+  }, [ariaLabeledBy]);
+
+  const isSelected = (value) => value === selected;
+
   return (
-    <SegmentControlWrapper role="tablist" aria-label="Toggle view">
-      {options.map((option, i) => (
+    <SegmentControlWrapper role="tablist" {...ariaProps}>
+      {options.map(({ value, label }, i) => (
         <SegmentButton
-          key={option}
+          key={value}
           role="tab"
           ref={(el) => (buttonRefs.current[i] = el)}
-          id={`segment-${option}`}
-          aria-selected={selected === option}
-          aria-controls={`panel-${option}`}
-          tabIndex={selected === option ? 0 : -1}
-          selected={selected === option}
-          onClick={() => onChange(option)}
+          id={`segment-${value}`}
+          aria-selected={isSelected(value)}
+          aria-controls={`panel-${value}`}
+          tabIndex={isSelected(value) ? 0 : -1}
+          selected={isSelected(value)}
+          onClick={() => onChange(value)}
           onKeyDown={(e) => handleKeyDown(e, i)}
+          variant={isSelected(value) ? BUTTON_VARIANT.SECONDARY : BUTTON_VARIANT.TERTIARY}
         >
-          {option}
+          {label}
         </SegmentButton>
       ))}
     </SegmentControlWrapper>
