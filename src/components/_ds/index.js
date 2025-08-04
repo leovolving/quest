@@ -4,5 +4,6 @@ export { InputField } from './InputField';
 export { Label } from './Label';
 export { ProgressBar } from './ProgressBar';
 export { RouterLink } from './RouterLink';
+export { SegmentControl } from './SegmentControl';
 export { Select } from './Select';
 export { default as ThreeDotMenu } from './ThreeDotMenu';
