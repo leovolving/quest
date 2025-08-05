@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { Button, ProgressBar } from '../components/_ds';
+import { Dialog, Button, ProgressBar } from '../components/_ds';
 
 import { useGameContext } from '../context/GameContext';
 import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
@@ -57,16 +57,14 @@ const GameCard = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.md};
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-  }
 
   @media (max-width: 600px) {
     padding: ${({ theme }) => theme.spacing.md};
   }
+`;
+
+const NewGameFormContainer = styled(GameCard)`
+  max-width: 800px;
 `;
 
 const GameCardButton = styled(Link)`
@@ -112,6 +110,7 @@ const StatusTitle = styled.h2`
 const GameDashboard = () => {
   const { games } = useGameContext();
   const { logAction } = useAnalytics();
+  const navigate = useNavigate();
   const [isNewGameFormOpen, toggleIsNewGameFormOpen] = useStateToggleBoolean(false);
 
   const groupedGames = games.reduce((acc, game) => {
@@ -132,6 +131,15 @@ const GameDashboard = () => {
     toggleIsNewGameFormOpen();
   };
 
+  const handleSuccess = (newGame) => {
+    navigate(`/game/${newGame.id}`);
+  };
+
+  const handleCancel = () => {
+    logAction(ACTION_NAMES.addNewGameCanceled);
+    toggleIsNewGameFormOpen();
+  };
+
   return (
     <Dashboard>
       <Header>
@@ -140,21 +148,30 @@ const GameDashboard = () => {
           + Add new game
         </Button>
       </Header>
-      <NewGameForm isOpen={isNewGameFormOpen} onClose={toggleIsNewGameFormOpen} />
-      {Object.entries(orderedGroupedGames).map(([status, games]) => (
-        <GameCard key={status}>
-          <StatusTitle>{status.replace(/-/g, ' ')}</StatusTitle>
-          {games.map((game) => (
-            <GameCardButton key={game.id} to={`/game/${game.id}`}>
-              <h3>{game.name}</h3>
-              <p>
-                {game.categories.length} {game.categories.length === 1 ? 'category' : 'categories'}
-              </p>
-              <ProgressBar value={game.progress.completed} max={game.progress.total} />
-            </GameCardButton>
-          ))}
-        </GameCard>
-      ))}
+      <Dialog isOpen={isNewGameFormOpen} onClose={handleCancel}>
+        <NewGameForm onSuccess={handleSuccess} />
+      </Dialog>
+      {games.length > 0 ? (
+        Object.entries(orderedGroupedGames).map(([status, games]) => (
+          <GameCard key={status}>
+            <StatusTitle>{status.replace(/-/g, ' ')}</StatusTitle>
+            {games.map((game) => (
+              <GameCardButton key={game.id} to={`/game/${game.id}`}>
+                <h3>{game.name}</h3>
+                <p>
+                  {game.categories.length}{' '}
+                  {game.categories.length === 1 ? 'category' : 'categories'}
+                </p>
+                <ProgressBar value={game.progress.completed} max={game.progress.total} />
+              </GameCardButton>
+            ))}
+          </GameCard>
+        ))
+      ) : (
+        <NewGameFormContainer>
+          <NewGameForm onSuccess={handleSuccess} />
+        </NewGameFormContainer>
+      )}
     </Dashboard>
   );
 };
