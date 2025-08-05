@@ -57,6 +57,7 @@ const Note = styled.em`
   margin-left: ${({ theme }) => theme.spacing.xs};
   margin-top: ${({ theme }) => theme.spacing.sm};
   display: block;
+  white-space: pre-wrap;
 `;
 
 const ObjectiveItem = ({ objective }) => {
