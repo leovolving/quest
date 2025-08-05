@@ -52,6 +52,7 @@ const Note = styled.em`
   font-size: 0.875rem;
   margin: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.xs};
   display: block;
+  white-space: pre-wrap;
 `;
 
 const ObjectiveItem = ({ objective }) => {
