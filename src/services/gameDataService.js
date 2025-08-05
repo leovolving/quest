@@ -3,8 +3,6 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import { ACTION_NAMES } from '../constants';
 
-import sampleData from '../data/sampleData';
-
 import { useGameContext } from '../context/GameContext';
 
 import useRouterHelpers from '../hooks/useRouterHelpers';
@@ -117,7 +115,7 @@ const useGameDataService = () => {
   };
 
   const initialize = () => {
-    const allCurrentGames = getGames(sampleData);
+    const allCurrentGames = getGames();
 
     setGames(allCurrentGames);
   };
