@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useMemo, useRef } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 
+import useStorageState from '../hooks/useStorageState';
+
 const GameContext = createContext();
 
 export const useGameContext = () => {
@@ -18,7 +20,7 @@ export const GameProvider = ({ children }) => {
   const [games, setGames] = useState([]);
   const selectedGameId = useSelectedGameId();
   const prevAllTagTypesRef = useRef([]);
-  const [showTags, setShowTags] = useState(false);
+  const [showTags, setShowTags] = useStorageState(false, 'tag-visibility');
 
   // TODO: remove if sticking with location-only tag type
   const allTagTypes = useMemo(() => {

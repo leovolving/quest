@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
 import useAnalytics from '../services/analyticsService';
+import useStorageState from '../hooks/useStorageState';
 
 import { ACTION_NAMES, STATUS_OPTIONS } from '../constants';
 
@@ -93,8 +93,8 @@ const groupings = {
 const groupingOptions = Object.values(groupings);
 
 const GameDetail = () => {
-  const [groupByTagType, setGroupByTagType] = useState('');
-  const [hideCompleted, setHideCompleted] = useState(false);
+  const [groupByTagType, setGroupByTagType] = useStorageState('', 'grouping');
+  const [hideCompleted, setHideCompleted] = useStorageState(false, 'hide-completed');
   const { selectedGame: game, showTags, setShowTags } = useGameContext();
   const { updateGame } = useGameDataService();
   const { logAction } = useAnalytics();
