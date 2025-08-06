@@ -1,4 +1,3 @@
-import React from 'react';
 import ObjectiveItem from './ObjectiveItem';
 
 const ObjectiveList = ({ objectives, hideCompleted }) => {
