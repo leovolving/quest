@@ -21,6 +21,7 @@ function useAnalytics() {
           event: actionName,
           local_user_id: localStorage.getItem('user_id'),
           local_session_id: sessionStorage.getItem('session_id'),
+          env: import.meta.env.ENV,
           properties,
         }),
       }).catch(() => {});
