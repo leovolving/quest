@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
-import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
+import useStorageState from '../hooks/useStorageState';
 import useAnalytics from '../services/analyticsService';
 
 import { Button } from '../components/_ds';
 import { ACTION_NAMES } from '../constants';
-
-useStateToggleBoolean;
 
 const lightTheme = {
   colors: {
@@ -217,7 +214,8 @@ const ThemeToggle = styled(Button)`
 `;
 
 const ThemeContextProvider = ({ children }) => {
-  const [isDarkMode, toggleIsDarkMode, setIsDarkMode] = useStateToggleBoolean(false);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const [isDarkMode, setIsDarkMode] = useStorageState(prefersDark, 'theme-preference');
   const { logAction } = useAnalytics();
 
   const handleToggle = () => {
@@ -227,14 +225,8 @@ const ThemeContextProvider = ({ children }) => {
       prefers_dark: prefersDark,
     });
 
-    toggleIsDarkMode();
+    setIsDarkMode((prev) => !prev);
   };
-
-  useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setIsDarkMode(prefersDark);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
