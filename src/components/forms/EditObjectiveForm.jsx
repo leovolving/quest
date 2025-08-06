@@ -113,7 +113,7 @@ export const EditObjectiveForm = ({ objective, onClose }) => {
         analyticsMetadata={analyticsMetadata}
       />
       <InputField
-        type="text"
+        as="textarea"
         label="Notes (optional)"
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
