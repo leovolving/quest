@@ -72,6 +72,13 @@ const useGameDataService = () => {
     }
   };
 
+  const addNewCategory = (categoryName, options) => {
+    const category = { name: categoryName, id: `${Date.now()}`, objectives: [] };
+    const gameToUpdate = cloneDeep(selectedGame);
+    gameToUpdate.categories.unshift(category);
+    updateGame(gameToUpdate, options);
+  };
+
   const deleteObjective = (objectiveId) => {
     const analyticsMetadata = { game_id: gameId, objective_id: objectiveId };
     const game = cloneDeep(selectedGame);
@@ -122,6 +129,7 @@ const useGameDataService = () => {
 
   return {
     initialize,
+    addNewCategory,
     addNewGame,
     deleteObjective,
     duplicateObjective,

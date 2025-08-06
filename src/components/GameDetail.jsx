@@ -5,14 +5,16 @@ import { useGameContext } from '../context/GameContext';
 import useGameDataService from '../services/gameDataService';
 import useAnalytics from '../services/analyticsService';
 import useStorageState from '../hooks/useStorageState';
+import useStateToggleBoolean from '../hooks/useStateToggleBoolean';
 
 import { ACTION_NAMES, STATUS_OPTIONS } from '../constants';
 
 import CategoryList from './CategoryList';
 import TagView from './TagView';
+import NewCategoryForm from './forms/NewCategoryForm';
 import NewObjectiveForm from './forms/NewObjectiveForm';
 
-import { RouterLink, SegmentControl, Select } from './_ds';
+import { Button, BUTTON_VARIANT, RouterLink, SegmentControl, Select } from './_ds';
 
 const BackLink = styled(RouterLink)`
   display: flex;
@@ -93,6 +95,7 @@ const groupings = {
 const groupingOptions = Object.values(groupings);
 
 const GameDetail = () => {
+  const [isCategoryFormOpen, toggleIsCategoryFormOpen] = useStateToggleBoolean(false);
   const [groupByTagType, setGroupByTagType] = useStorageState('', 'grouping');
   const [hideCompleted, setHideCompleted] = useStorageState(false, 'hide-completed');
   const { selectedGame: game, showTags, setShowTags } = useGameContext();
@@ -148,6 +151,11 @@ const GameDetail = () => {
     setShowTags(newValue);
   };
 
+  const handleNewCategoryClick = () => {
+    logAction(ACTION_NAMES.addNewCategoryClicked, analyticsMetadata);
+    toggleIsCategoryFormOpen(true);
+  };
+
   const hasObjectives = game.categories.some((c) => c.objectives?.length > 0);
 
   return (
@@ -157,6 +165,14 @@ const GameDetail = () => {
       </BackLink>
       <GameHeader>
         <GameTitle>{game.name}</GameTitle>
+        <Select
+          label="Game status"
+          onChange={onUpdateStatus}
+          options={STATUS_OPTIONS}
+          value={game.status || 'not-played'}
+          changeActionName={ACTION_NAMES.gameDetailGameStatusChanged}
+          analyticsMetadata={analyticsMetadata}
+        />
       </GameHeader>
 
       <ViewControls>
@@ -182,15 +198,13 @@ const GameDetail = () => {
             </div>
           </Flex1ControlGroup>
         )}
-        <Select
-          label="Game status"
-          onChange={onUpdateStatus}
-          options={STATUS_OPTIONS}
-          value={game.status || 'not-played'}
-          changeActionName={ACTION_NAMES.gameDetailGameStatusChanged}
-          analyticsMetadata={analyticsMetadata}
-        />
+
+        <Button variant={BUTTON_VARIANT.SECONDARY} onClick={handleNewCategoryClick}>
+          + Add new quest
+        </Button>
       </ViewControls>
+
+      {isCategoryFormOpen && <NewCategoryForm isOpen onClose={toggleIsCategoryFormOpen} />}
 
       <ToggleWrapper>
         <span id="task-grouping-toggle">Grouped by:</span>
