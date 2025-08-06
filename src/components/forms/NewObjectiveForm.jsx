@@ -77,7 +77,7 @@ const NewObjectiveForm = ({ initialValues = {}, onClose }) => {
   const [newObjectiveTitle, setNewObjectiveTitle] = useState('');
   const [newObjectiveNote, setNewObjectiveNote] = useState('');
   const [selectedCategoryName, setSelectedCategoryName] = useState(initialValues.category || '');
-  const [newTags, setNewTags] = useState([]);
+  const [newTags, setNewTags] = useState(initialValues.tags || []);
   const [progressCurrent, setProgressCurrent] = useState('');
   const [progressTotal, setProgressTotal] = useState('');
 
